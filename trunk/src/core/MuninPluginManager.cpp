@@ -90,7 +90,7 @@ MuninPluginManager::MuninPluginManager()
       if (plugin->IsLoaded()) {
         AddPlugin(plugin);
       } else {
-        _Module.LogEvent("Failed to load External plugin: %s", filename.c_str());
+        _Module.LogError("Failed to load External plugin: %s", filename.c_str());
         delete plugin;
       }
     }

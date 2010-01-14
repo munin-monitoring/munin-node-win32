@@ -18,6 +18,7 @@
 
 #include "StdAfx.h"
 #include "MuninNodeServer.h"
+#include "MuninNodeSettings.h"
 #include "Service.h"
 
 void MuninNodeServer::Stop()
@@ -29,7 +30,12 @@ void MuninNodeServer::Stop()
 
 void *MuninNodeServer::Entry()
 {	
-  //the socket function creates our SOCKET  
+	int portNumber = g_Config.GetValueI("MuninNode", "PortNumber", 4949);
+	bool logConnections = g_Config.GetValueB("MuninNode", "LogConnections", true);
+	std::string masterAddress = g_Config.GetValue("MuninNode", "MasterAddress", "*");
+	//std::string bindAddress = g_Config.GetValue("MuninNode", "BindAddress", "");
+	
+	//the socket function creates our SOCKET  
   if (!m_ServerSocket.Create()) {
     return 0;
   }
@@ -38,7 +44,7 @@ void *MuninNodeServer::Entry()
   //structure. Basically it connects the socket with 
   //the local address and a specified port.
   //If it returns non-zero quit, as this indicates error
-  if (!m_ServerSocket.Bind(4949)) {
+  if (!m_ServerSocket.Bind(portNumber)) {
     return 0;
   }
 
@@ -56,10 +62,16 @@ void *MuninNodeServer::Entry()
     if (m_ServerSocket.Accept(client)) {
       // TODO: Add ip address matching, http://stackoverflow.com/questions/594112/matching-an-ip-to-a-cidr-mask-in-php5
       const char *ipAddress = inet_ntoa(client->m_Address.sin_addr);
-      _Module.LogEvent("Connection from %s", ipAddress);
-      // Start child thread to process client socket
-      MuninNodeClient *clientThread = new MuninNodeClient(client, this, &m_PluginManager);
-      clientThread->Run();
+	  if (masterAddress == "*" || ipAddress == masterAddress) {
+		  if(logConnections){
+			_Module.LogEvent("Connection from %s", ipAddress);
+		  }
+		  // Start child thread to process client socket
+		  MuninNodeClient *clientThread = new MuninNodeClient(client, this, &m_PluginManager);
+		  clientThread->Run();
+	  } else {
+		  _Module.LogError("Rejecting connection from %s", ipAddress);
+	  }
     } else {
       delete client;
       break;

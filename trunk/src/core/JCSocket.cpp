@@ -118,7 +118,7 @@ bool JCSocket::Connect( const char *host, int nPort )
 
 bool JCSocket::Bind(int nLocalPort, const char *address)
 {
-  m_Address.sin_addr.s_addr = address ? inet_addr(address) : INADDR_ANY;
+	m_Address.sin_addr.s_addr = ::htonl(address ? inet_addr(address) : INADDR_ANY);
   m_Address.sin_family = AF_INET;
   m_Address.sin_port = ::htons(nLocalPort);
   memset(m_Address.sin_zero, 0, sizeof(m_Address.sin_zero));
