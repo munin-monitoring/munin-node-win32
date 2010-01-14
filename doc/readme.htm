@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Readme for Munin Node for Windows</title>
+</head>
+<body>
+<h1>Munin Node for Windows v1.6</h1>
+<hr />
+<p>Munin Node for Windows AKA munin-node-win32, is a Windows client
+for the <a href="http://munin.projects.linpro.no/">Munin</a>
+monitoring system.</p>
+<p>It is written in C++ with most plugins built into the executable. Which
+is different from the standard munin-node client, which only uses
+external plugins written as shell and Perl scripts.</p>
+<h3>Command Line Usage</h3>
+<ul>
+    <li><i>-install</i> Install as a system service, also adds an
+        exception to Windows Firewall</li>
+    <li><i>-uninstall</i> Removes the installed service. The Windows
+        Firewall exception is also removed</li>
+    <li><i>-quiet</i> Close the console window, running in the
+        background.</li>
+    <li><i>-run</i> Run as a normal program, rather than a
+        service.</li>
+</ul>
+<h3>Configuration File</h3>
+<p>The configuration file munin-node.ini uses the standard Windows
+INI file format.</p>
+<p>The main section is the <b>[Plugins]</b> section which defines
+which plugins are enabled and which are disabled. Use 1 to enable
+and 0 to disable. Most plugins handle failing to load gracefully,
+however some may have a bug (if so please report :).</p>
+<p>You can disable plugins you don't want, to save on memory and cpu
+usage.</p>
+<h3>Plugins</h3>
+<ul>
+    <li>CPU (cpu)
+        <ul>
+        <li>Reports the current user cpu usage</li>
+        </ul>
+    </li>
+    <li>Disk (df)
+        <ul>
+        <li>Reports disk drive space usage</li>
+        <li>Configuration in <b>[DiskPlugin]</b> section.</li>        
+        </ul>
+    </li>
+    <li>HD (hdd)
+        <ul>
+        <li>Reports HardDrive temperature</li>
+        </ul>
+    </li>
+    <li>Memory (memory)
+        <ul>
+        <li>Reports memory usage</li>
+        </ul>
+    </li>
+    <li>Process (processes)
+        <ul>
+        <li>Reports process and thread count</li>
+        </ul>
+        </li>
+    <li>Network (network)
+        <ul>
+        <li>Reports network bytes send and recived</li>
+        </ul>
+    </li>
+    <li>MBM (mbm, mbm_volt, mbm_fan, mbm_cpu)
+        <ul>
+        <li>Reports sensor data from 
+        <a href="http://en.wikipedia.org/wiki/Motherboard_Monitor">Motherboard Monitor</a></li>
+        </ul>
+    </li>
+    <li>SpeedFan (speedfan)
+        <ul>
+        <li>Reports sensor data from 
+        <a href="http://www.almico.com/speedfan.php">SpeedFan</a> xAP broadcasts</li>
+        <li>Configuration in <b>[SpeedFanPlugin]</b> section. You have to change the <b>BroadcastIP</b> 
+        and <b>UID</b> settings to match SpeedFan (Configuration-&gt;xAP)</li>        
+        </ul>
+    </li>    
+    <li>Performance Counter
+        <ul>
+        <li>Reports performance counter values, very extenable to monitor any counter</li>
+        <li>An instance of this plugin is created for every section starting with 
+        <b>[PerfCounterPlugin_]</b> in the Configuration. For example there is a 
+        <b>[PerfCounterPlugin_uptime]</b> section in the stock configuration file. This
+        defines a plugin with a name of <i>uptime</i>.<br />
+        An example section is listed below,
+        <pre>
+; The Object and Counter settings are used to access the Performance Counter
+; For uptime this would result in \System\System Up Time
+Object=System
+Counter=System Up Time
+; The Graph settings are reported to munin
+GraphTitle=Uptime
+GraphCategory=system
+GraphDraw=AREA
+GraphArgs=--base 1000 -l 0
+; The DropTotal setting will drop the last instance from the counter list, 
+; which is often _Total
+; Has no effect on single instance counters (Uptime)
+DropTotal=0
+; The CounterFormat setting controls what format the counter value is read in as 
+; a double, int, or large (int64).
+; The plugin always outputs doubles, so this shouldn't have that much effect
+CounterFormat=large
+; The CounterMultiply setting sets a value the counter value is multiplied by, 
+; use it to adjust the scale
+; 1.1574074074074073e-005 is the result of(1 / 86400.0), 
+; the uptime counter reports seconds and we want to report days.
+; So we want to divide the counter value by the number of seconds in a day, 86400.
+CounterMultiply=1.1574074074074073e-005
+        </pre>
+        </li>
+        </ul>
+    </li>
+    <li>External Plugin
+        <ul>
+        <li>A plugin that supports external plugins in the style of munin-node.</li>
+        <li>Configuration in <b>[ExternalPlugin]</b> section. Just add an entry with 
+        the path to the program to run, It doesn't matter what the name of the name=value 
+        pair is.</li>
+        <li>The output of the external program should be similar to the following,
+<pre>
+&gt;disk_free.py name
+drive_free
+
+&gt;disk_free.py
+drive_free_c.value 40.3635149113
+.
+
+&gt;disk_free.py config
+graph_title Filesystem free (in %)
+graph_category disk
+graph_info This graph shows the amount of free space on each disk.
+graph_args --upper-limit 100 -l 0
+graph_vlabel %
+drive_free_c.label C:
+.
+</pre>
+        </li>
+        </ul>
+    </li>        
+    
+</ul>
+<h3>Version History</h3>
+<ul>
+    <li>v1.6 06/20/2008</li>
+    <li>
+        <ul>
+        <li>Plugin Changes</li>
+        <li>
+            <ul>
+            <li>Corrected Configuration in Memory Plugin</li>
+            </ul>
+        </li>
+        </ul>
+    </li>
+    <li>v1.5 06/02/2008</li>
+    <li>
+        <ul>
+        <li>Plugin Changes</li>
+        <li>
+            <ul>
+            <li>Added SpeedFan Plugin</li>
+            <li>Added External Plugins Plugin, external plugins are now
+            supported</li>
+            <li>Added Generic Performance Counter Plugin</li>
+            <li>Removed Uptime, Disktime Plugins. Replaced with the 
+            Generic Performance Counter Plugin</li>            
+            <li>Improved error handling in Cpu Plugin</li>            
+            </ul>
+        </li>
+        <li>Added readme documention</li>
+        <li>Updated <i>-install</i> / <i>-uninstall</i> switches to handle
+        Window Firewall exceptions</li>
+        <li>Now Unicode compatiable</li>
+        <li>Fixed memory leaks</li>
+        <li>Improved multi-thread safety</li>
+        <li>Added better Event Log support</li>            
+        </ul>
+    </li>
+</ul>
+</body>
+</html>
