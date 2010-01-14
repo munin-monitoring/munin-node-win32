@@ -139,7 +139,8 @@ void CService::Run()
 
   //LogEvent("Updating INI File");
   // Save any changes to the INI file
-  g_Config.WriteFile();
+  // NAAAAH, never ever modify my settings
+  // g_Config.WriteFile();
 
   if (m_bService) 
   {
@@ -204,7 +205,7 @@ BOOL CService::Install()
   // Adding firewall rule
   if (FAILED(AddApplicationToExceptionList(szFilePath, m_szServiceName))) 
   {
-    ShowMessage(_T("Couldn't add firewall excception rule"));
+    ShowMessage(_T("Couldn't add firewall exception rule"));
   }
 
   if (dwStartupType == SERVICE_AUTO_START)
@@ -266,7 +267,7 @@ BOOL CService::Uninstall(DWORD dwTimeout)
   // Remove firewall rule
   if (FAILED(RemoveApplicationFromExceptionList(szFilePath))) 
   {
-    ShowMessage(_T("Couldn't remove firewall excception rule"));
+    ShowMessage(_T("Couldn't remove firewall exception rule"));
   }
 
   if (!m_EventLog.UnRegisterSource()) 
@@ -330,6 +331,28 @@ void CService::LogEvent(LPCSTR pFormat, ...)
   else
   {
     // As we don't have an event log handle, just write the error to the console.
+    printf(chMsg);
+    printf("\n");
+  }
+}
+
+void CService::LogError(LPCSTR pFormat, ...)
+{
+  char chMsg[512];    
+  va_list pArg;
+  va_start(pArg, pFormat);
+  _vsnprintf(chMsg, 512, pFormat, pArg);
+  va_end(pArg);
+  chMsg[511] = 0; 
+
+  if (m_bService)
+  {
+    m_EventLog.Write(EVENTLOG_ERROR_TYPE, A2TConvert(chMsg).c_str());
+  }
+  else
+  {
+    // As we don't have an event log handle, just write the error to the console.
+	printf("ERROR:");
     printf(chMsg);
     printf("\n");
   }
