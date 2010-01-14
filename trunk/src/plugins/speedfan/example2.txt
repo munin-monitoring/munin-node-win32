@@ -1,0 +1,9 @@
+xAP-hbeat
+{
+v=12
+hop=1
+uid=FF671100
+class=xap-hbeat.alive
+source=Almico.SpeedFan.JCSSTON
+interval=60
+}
