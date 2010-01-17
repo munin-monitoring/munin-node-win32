@@ -105,7 +105,7 @@ MuninPluginManager::MuninPluginManager()
       if (plugin->IsLoaded()) {
         AddPlugin(plugin);
       } else {
-        _Module.LogEvent("Failed to load PerfCounter plugin: [%s]", keyName.c_str());
+        _Module.LogError("Failed to load PerfCounter plugin: [%s]", keyName.c_str());
         delete plugin;
       }
     }
@@ -132,7 +132,7 @@ MuninPluginManager::~MuninPluginManager()
 
 void MuninPluginManager::AddPlugin(MuninNodePlugin *plugin)
 {
-  _Module.LogEvent("Loaded plugin [%s]", typeid(*plugin).name());
+  _Module.LogEvent("Loaded plugin [%s - %s]", typeid(*plugin).name(), plugin->GetName());
   if (!plugin->IsThreadSafe())
     plugin = new MuninNodePluginLockWrapper(plugin);
   m_Plugins.push_back(plugin);

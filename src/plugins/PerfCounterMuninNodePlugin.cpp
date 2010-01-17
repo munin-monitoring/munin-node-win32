@@ -19,6 +19,8 @@
 #include "StdAfx.h"
 #include "PerfCounterMuninNodePlugin.h"
 
+#include "../core/Service.h"
+
 const char *PerfCounterMuninNodePlugin::SectionPrefix = "PerfCounterPlugin_";
 
 PerfCounterMuninNodePlugin::PerfCounterMuninNodePlugin(const std::string &sectionName)
@@ -45,16 +47,22 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 {
   PDH_STATUS status;  
 
+  m_Name = m_SectionName.substr(strlen(PerfCounterMuninNodePlugin::SectionPrefix));
+
   OSVERSIONINFO osvi;    
   ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  if (!GetVersionEx(&osvi) || (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT))
-    return false; //unknown OS or not NT based
+  if (!GetVersionEx(&osvi) || (osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)) {
+	  _Module.LogError("PerfCounter plugin: %s: unknown OS or not NT based", m_Name.c_str());
+	  return false; //unknown OS or not NT based
+  }
 
   // Create a PDH query
   status = PdhOpenQuery(NULL, 0, &m_PerfQuery);
-  if (status != ERROR_SUCCESS)
-    return false;
+  if (status != ERROR_SUCCESS) {
+	  _Module.LogError("PerfCounter plugin: %s: PdhOpenQuery error", m_Name.c_str());
+	  return false;
+  }
 
   TString objectName = A2TConvert(g_Config.GetValue(m_SectionName, "Object", "LogicalDisk"));
   TString counterName = A2TConvert(g_Config.GetValue(m_SectionName, "Counter", "% Disk Time"));
@@ -62,8 +70,10 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   DWORD counterListLength = 0;  
   DWORD instanceListLength = 0;
   status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), NULL, &counterListLength, NULL, &instanceListLength, PERF_DETAIL_EXPERT, 0);
-  if (status != PDH_MORE_DATA)
-    return false;
+  if (status != PDH_MORE_DATA) {
+	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error", m_Name.c_str());
+	  return false;
+  }
 
   TCHAR *counterList = new TCHAR[counterListLength+2];
   TCHAR *instanceList = new TCHAR[instanceListLength+2];
@@ -76,6 +86,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   if (status != ERROR_SUCCESS) {
     delete [] counterList;
     delete [] instanceList;
+	_Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error", m_Name.c_str());
     return false;  
   }
 
@@ -105,8 +116,10 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
       _sntprintf(counterPath, MAX_PATH, _T("\\%s(%s)\\%s"), objectName.c_str(), instanceNameStr.c_str(), counterName.c_str());
       // Associate the uptime counter with the query
       status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
-      if (status != ERROR_SUCCESS)
-        return false;
+	  if (status != ERROR_SUCCESS) {
+		  _Module.LogError("PerfCounter plugin: %s: PDH add counter error", m_Name.c_str());
+		  return false;
+	  }
       
       m_Counters.push_back(counterHandle);
     }
@@ -116,18 +129,28 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
     _sntprintf(counterPath, MAX_PATH, _T("\\%s\\%s"), objectName.c_str(), counterName.c_str());
     // Associate the uptime counter with the query
     status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
-    if (status != ERROR_SUCCESS)
-      return false;
+	if (status != ERROR_SUCCESS) {
+		_Module.LogError("PerfCounter plugin: %s: PDH add counter error", m_Name.c_str());
+		return false;
+	}
     
     m_Counters.push_back(counterHandle);
   }
   
   // Collect init data
   status = PdhCollectQueryData(m_PerfQuery);
-  if (status != ERROR_SUCCESS)
-    return false;
-
-  m_Name = m_SectionName.substr(strlen(PerfCounterMuninNodePlugin::SectionPrefix));
+  if (status != ERROR_SUCCESS) {
+	  if (status == PDH_INVALID_HANDLE) {
+		  _Module.LogError("PerfCounter plugin: %s: PDH collect data: PDH_INVALID_HANDLE", m_Name.c_str());
+		  return false;
+	  }
+	  if (status == PDH_NO_DATA) {
+		  _Module.LogError("PerfCounter plugin: %s: PDH collect data: PDH_NO_DATA", m_Name.c_str());
+		  return false;
+	  }
+	  _Module.LogError("PerfCounter plugin: %s: PDH collect data error", m_Name.c_str());
+	  return false;
+  }
 
   // Setup Counter Format
   m_dwCounterFormat = PDH_FMT_DOUBLE;
@@ -146,7 +169,8 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
     m_dwCounterFormat = PDH_FMT_LARGE;
 
   } else {
-    assert(!"Unknown CounterFormat!");
+	  _Module.LogError("PerfCounter plugin: %s: Unknown CounterFormat", m_Name.c_str());
+	  assert(!"Unknown CounterFormat!");
   }
 
   m_CounterMultiply = g_Config.GetValueF(m_SectionName, "CounterMultiply", 1.0);
