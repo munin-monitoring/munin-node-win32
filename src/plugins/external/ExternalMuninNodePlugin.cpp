@@ -40,9 +40,10 @@ void removeAllLF (std::string &str)
 
 
 
-ExternalMuninNodePlugin::ExternalMuninNodePlugin(const std::string &externalPlugin) 
+ExternalMuninNodePlugin::ExternalMuninNodePlugin(const std::string &externalPlugin, int timeout)
   : m_ExternalPlugin(externalPlugin)
 {
+	m_TimeoutSec = timeout;
   m_Name = Run("name");
   removeAllNL(m_Name);
   // Check that the name is valid
@@ -86,10 +87,26 @@ std::string ExternalMuninNodePlugin::Run(const char *command)
 
   PluginPipe pipe;
   if (pipe.Execute(A2TConvert(cmdLine).c_str()) == CPEXEC_OK) {
-    // Wait for the command to complete
-    while (pipe.IsChildRunning())
-      Sleep(100); // don't do a very tight loop -- that reduces CPU usage
-    return T2AConvert(pipe.GetOutput());
+	  if (m_TimeoutSec == 0) {
+			// Wait for the command to complete
+			while (pipe.IsChildRunning())
+			  Sleep(100); // don't do a very tight loop -- that reduces CPU usage
+			return T2AConvert(pipe.GetOutput());
+	  } else {
+		  long loops = m_TimeoutSec * 10;
+		  while (pipe.IsChildRunning() && loops > 0) {
+			  Sleep(100); // don't do a very tight loop -- that reduces CPU usage
+			  loops--;
+		  }
+
+		  if (pipe.IsChildRunning()) {
+			  _Module.LogError("External plugin timeout: %s", m_Name.c_str());
+			  pipe.Break();
+			  return "";
+		  }
+
+		  return T2AConvert(pipe.GetOutput());
+	  }
   }
   // Command failed, empty string
   return "";

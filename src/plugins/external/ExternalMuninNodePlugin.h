@@ -5,7 +5,7 @@
 class ExternalMuninNodePlugin : public MuninNodePluginHelper
 {
 public:
-  ExternalMuninNodePlugin(const std::string &externalPlugin);
+  ExternalMuninNodePlugin(const std::string &externalPlugin, int timeout);
   virtual ~ExternalMuninNodePlugin();
 
   virtual int GetConfig(char *buffer, int len);
@@ -28,4 +28,5 @@ private:
   std::string Run(const char *command);
 
   std::string m_ExternalPlugin;
+  int m_TimeoutSec;
 };

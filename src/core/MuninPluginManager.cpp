@@ -82,13 +82,14 @@ MuninPluginManager::MuninPluginManager()
     AddPlugin(new SpeedFanNodePlugin());
   
   if (g_Config.GetValueB("Plugins", "External", true)) {
+    int externalTimeout = g_Config.GetValueI("Plugins", "ExternalTimeout", 0);
     int externalCount = g_Config.NumValues("ExternalPlugin");
     for (int i = 0; i < externalCount; i++) {
       std::string valueName = g_Config.GetValueName("ExternalPlugin", i); 
       std::string filename = g_Config.GetValue("ExternalPlugin", valueName);
-      ExternalMuninNodePlugin *plugin = new ExternalMuninNodePlugin(filename);
+      ExternalMuninNodePlugin *plugin = new ExternalMuninNodePlugin(filename, externalTimeout);
       if (plugin->IsLoaded()) {
-        AddPlugin(plugin);
+		  AddPlugin(plugin);
       } else {
         _Module.LogError("Failed to load External plugin: %s", filename.c_str());
         delete plugin;
