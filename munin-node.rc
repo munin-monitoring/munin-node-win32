@@ -27,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE
 BEGIN
     "#include ""windows.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "munin-node for Windows"
             VALUE "FileVersion", "1, 6, 0, 0"
             VALUE "InternalName", "munin-node-win32"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2009 Jory 'jcsston' Stone"
+            VALUE "LegalCopyright", "Copyright (C) 2006-2009 Jory 'jcsston' Stone, modified by Adam Groszer"
             VALUE "OriginalFilename", "munin-node.exe"
             VALUE "ProductName", "munin-node for Windows"
             VALUE "ProductVersion", "1, 6, 0, 0"
@@ -107,4 +107,3 @@ IDI_ICON1               ICON                    "bird.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
