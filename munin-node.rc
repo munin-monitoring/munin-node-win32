@@ -72,7 +72,7 @@ BEGIN
             VALUE "FileDescription", "munin-node for Windows"
             VALUE "FileVersion", "1, 6, 0, 0"
             VALUE "InternalName", "munin-node-win32"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2009 Jory 'jcsston' Stone, modified by Adam Groszer"
+            VALUE "LegalCopyright", "Copyright (C) 2006-2011 Jory 'jcsston' Stone, modified by Adam Groszer"
             VALUE "OriginalFilename", "munin-node.exe"
             VALUE "ProductName", "munin-node for Windows"
             VALUE "ProductVersion", "1, 6, 0, 0"

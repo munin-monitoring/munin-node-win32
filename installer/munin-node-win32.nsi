@@ -1,16 +1,17 @@
 ; munin-node-win32.nsi
 ;
 ; NSIS Installer build script
-
 ;--------------------------------
 
 !addplugindir "nsisFirewall"
+!include "FileFunc.nsh"
 
 ; The name of the installer
-Name "Munin Node for Windows"
+!define VERSION 1.6.0.0
+Name "Munin Node for Windows ${VERSION}"
 
 ; The file to write
-OutFile "munin-node-win32-installer.exe"
+OutFile "munin-node-win32-${VERSION}-installer.exe"
 
 ; The default installation directory
 InstallDir "$PROGRAMFILES\Munin Node for Windows"
@@ -22,10 +23,18 @@ InstallDirRegKey HKLM "Software\Munin Node for Windows" "Install_Dir"
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
+VIProductVersion "${VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "NSIS Installer for Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2006-2011 Jory 'jcsston' Stone, modified by Adam Groszer"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "InternalName" "munin-node-win32"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
+  
 ;--------------------------------
 
 ; Pages
-
 Page components
 Page directory
 Page instfiles
@@ -50,10 +59,17 @@ Section "Munin Node for Windows (required)"
   WriteRegStr HKLM "SOFTWARE\Munin Node for Windows" "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "DisplayName" "Munin Node for Windows"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayName" "Munin Node for Windows"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayIcon " '"$INSTDIR\munin-node.exe"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "URLInfoAbout" "http://code.google.com/p/munin-node-win32/"
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "NoRepair" 1
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "EstimatedSize" "$0"
+ 
   WriteUninstaller "uninstall.exe"
   
 SectionEnd
@@ -77,6 +93,11 @@ Section "Add Windows Firewall Rule"
 		Return
 SectionEnd
 
+; Install service
+Section "Install Service"
+	ExecWait '"$INSTDIR\munin-node.exe" -install'
+SectionEnd
+
 ;--------------------------------
 
 ; Uninstaller
@@ -88,6 +109,9 @@ Section "Uninstall"
 	IntCmp $0 0 +3
 		MessageBox MB_OK "A problem happened while removing Munin Node for Windows from the Firewall exception list (result=$0)"
 		Return
+
+  ; Remove service
+  ExecWait '"$INSTDIR\munin-node.exe" -uninstall'
   
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows"
