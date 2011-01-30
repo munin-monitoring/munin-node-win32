@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>ws2_32.lib;Iphlpapi.lib;Pdh.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;Iphlpapi.lib;Pdh.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\core\JCSocket.cpp" />
+    <ClCompile Include="src\core\munin-node.cpp" />
+    <ClCompile Include="src\core\MuninNodeClient.cpp" />
+    <ClCompile Include="src\core\MuninNodePlugin.cpp" />
+    <ClCompile Include="src\core\MuninNodeServer.cpp" />
+    <ClCompile Include="src\core\MuninNodeSettings.cpp" />
+    <ClCompile Include="src\core\MuninPluginManager.cpp" />
+    <ClCompile Include="src\core\Service.cpp" />
+    <ClCompile Include="src\core\TString.cpp" />
+    <ClCompile Include="src\extra\FirewallInstallHelper.cpp" />
+    <ClCompile Include="src\extra\iniFile.cpp" />
+    <ClCompile Include="src\extra\registry.cpp" />
+    <ClCompile Include="src\extra\verinfo.cpp" />
+    <ClCompile Include="src\extra\XEventLog.cpp" />
+    <ClCompile Include="src\plugins\cpu\CpuMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\DiskMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\DiskTimeMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\HDMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMARTMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SmartReader.cpp" />
+    <ClCompile Include="src\plugins\external\ConsolePipe.cpp" />
+    <ClCompile Include="src\plugins\external\ExternalMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\mbm\MBMMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\memory\MemoryMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\network\NetworkMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\process\ProcessesMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\RegistryMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\speedfan\SpeedFanNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\uptime\UptimeMuninNodePlugin.cpp" />
+    <ClCompile Include="src\StdAfx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\core\JCSocket.h" />
+    <ClInclude Include="src\core\JCThread.h" />
+    <ClInclude Include="src\core\MuninNodeClient.h" />
+    <ClInclude Include="src\core\MuninNodePlugin.h" />
+    <ClInclude Include="src\core\MuninNodeServer.h" />
+    <ClInclude Include="src\core\MuninNodeSettings.h" />
+    <ClInclude Include="src\core\MuninPluginManager.h" />
+    <ClInclude Include="src\core\Service.h" />
+    <ClInclude Include="src\core\TString.h" />
+    <ClInclude Include="src\extra\FirewallInstallHelper.h" />
+    <ClInclude Include="src\extra\iniFile.h" />
+    <ClInclude Include="src\extra\registry.h" />
+    <ClInclude Include="src\extra\verinfo.h" />
+    <ClInclude Include="src\extra\XEventLog.h" />
+    <ClInclude Include="src\plugins\cpu\CpuMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\DiskMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\DiskTimeMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\HDMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMARTMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SmartReader.h" />
+    <ClInclude Include="src\plugins\external\consolePipe.h" />
+    <ClInclude Include="src\plugins\external\ExternalMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\mbm\mbm.h" />
+    <ClInclude Include="src\plugins\mbm\MBMMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\memory\MemoryMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\network\NetworkMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\process\ProcessesMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\RegistryMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\speedfan\SpeedFanNodePlugin.h" />
+    <ClInclude Include="src\plugins\uptime\UptimeMuninNodePlugin.h" />
+    <ClInclude Include="src\StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="munin-node.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="doc\readme.htm" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
