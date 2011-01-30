@@ -210,22 +210,52 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
     free(info);
 
     std::string graphDraw = g_Config.GetValue(m_SectionName, "GraphDraw", "LINE");
+	std::string counterType = g_Config.GetValue(m_SectionName, "CounterType", "GAUGE");
+
+	std::string minValue;
+	std::string minValueNumbered;
+
+	if(counterType == "DERIVE") {
+		minValue = "%s.min 0\n";
+		minValueNumbered = "%s_%i_.min 0\n";
+	} else {
+		minValue = minValueNumbered = "";
+	}
 
     assert(m_CounterNames.size() == m_Counters.size());
+
+	std::string labels;
+
       // We handle multiple counters
       for (size_t i = 0; i < m_CounterNames.size(); i++) {
-        if (i == 0) {        
+        if (i == 0) {
+
+		  labels = "%s.label %s\n"
+				   "%s.draw %s\n"
+				   "%s.type %s\n";
+		  labels += minValue;
+
           // First counter gets a normal name
-          printCount = _snprintf(buffer, len, "%s.label %s\n"
-            "%s.draw %s\n", 
+          printCount = _snprintf(buffer, len, 
+			labels.c_str(),
             m_Name.c_str(), m_CounterNames[i].c_str(),
-            m_Name.c_str(), graphDraw.c_str());
+            m_Name.c_str(), graphDraw.c_str(),
+			m_Name.c_str(), counterType.c_str(),
+			m_Name.c_str());
         } else {
           // Rest of the counters are numbered
-          printCount = _snprintf(buffer, len, "%s_%i_.label %s\n"
-            "%s_%i_.draw %s\n", 
+
+		  labels = "%s_%i_.label %s\n"
+ 				   "%s_%i_.draw %s\n"
+				   "%s_%i_.type %s\n";
+		  labels += minValueNumbered;
+
+          printCount = _snprintf(buffer, len, 
+            labels.c_str(),
             m_Name.c_str(), i, m_CounterNames[i].c_str(),
-            m_Name.c_str(), i, graphDraw.c_str());
+            m_Name.c_str(), i, graphDraw.c_str(),
+			m_Name.c_str(), i, counterType.c_str(),
+			m_Name.c_str(), i);
         }
         len -= printCount;
         buffer += printCount;
@@ -234,6 +264,19 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 
   strncat(buffer, ".\n", len);
   return 0;
+}
+
+int printvalue(char* buffer, size_t len, const char* name, size_t i, double value, DWORD counterformat) {
+	if(counterformat == PDH_FMT_LONG)
+		if(0==i)
+			return _snprintf(buffer, len, "%s.value %i\n", name, (int)value);
+		else
+			return _snprintf(buffer, len, "%s_%i_.value %i\n", name, i, (int)value);
+	else 
+		if(0==i)
+			return _snprintf(buffer, len, "%s.value %.2f\n", name, value);
+		else
+			return _snprintf(buffer, len, "%s_%i_.value %.2f\n", name, i, value);
 }
 
 int PerfCounterMuninNodePlugin::GetValues(char *buffer, int len)
@@ -263,13 +306,7 @@ int PerfCounterMuninNodePlugin::GetValues(char *buffer, int len)
         value = counterValue.largeValue * m_CounterMultiply;
         break;
     }
-    if (i == 0) {
-      // First counter gets a normal name
-      printCount = _snprintf(buffer, len, "%s.value %.2f\n", m_Name.c_str(), value);
-    } else {
-      // Other counters are numbered
-      printCount = _snprintf(buffer, len, "%s_%i_.value %.2f\n", m_Name.c_str(), i, value);
-    }
+    printCount = printvalue(buffer, len, m_Name.c_str(), i, value, m_dwCounterFormat);
     len -= printCount;
     buffer += printCount;
   }
