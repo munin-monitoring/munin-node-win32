@@ -1,5 +1,6 @@
 /* This file is part of munin-node-win32
  * Copyright (C) 2006-2008 Jory Stone (jcsston@jory.info)
+ * Support for DERIVE Permon counters by jossh.robb@gmail.com
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
