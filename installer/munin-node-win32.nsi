@@ -7,7 +7,7 @@
 !include "FileFunc.nsh"
 
 ; The name of the installer
-!define VERSION 1.6.0.0
+!define VERSION 1.6.1.0
 Name "Munin Node for Windows ${VERSION}"
 
 ; The file to write
