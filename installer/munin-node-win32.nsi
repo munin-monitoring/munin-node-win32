@@ -54,6 +54,7 @@ Section "Munin Node for Windows (required)"
   
   ; Put file there
   File "..\Release\munin-node.exe"
+  File "..\munin-node.ini"
   
   ; Write the installation path into the registry
   WriteRegStr HKLM "SOFTWARE\Munin Node for Windows" "Install_Dir" "$INSTDIR"
