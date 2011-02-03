@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   CFileVersionInfo ver;
   ver.Open(GetModuleHandle(NULL));
   TCHAR displayName[256];
-  _sntprintf(displayName, 255, _T("Munin Node for Windows %i.%i.%i"), ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionQFE());
+  _sntprintf(displayName, 255, _T("Munin Node for Windows %i.%i.%i (Beta)"), ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionQFE());
 
   // Load Configuration
   // Get the executable file path
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   g_Config.ReadFile();
 
   // Prepare Service modules
-  _Module.Init(_T("munin-node"), _T("Munin Node for Windows"));
+  _Module.Init(_T("munin-node"), displayName);
   _Module.m_bService = TRUE;  
 
   // Parse arguments

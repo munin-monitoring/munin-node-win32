@@ -8,7 +8,7 @@
 
 ; The name of the installer
 !define VERSION 1.6.1.0
-Name "Munin Node for Windows ${VERSION}"
+Name "Munin Node for Windows ${VERSION} (Beta)"
 
 ; The file to write
 OutFile "munin-node-win32-${VERSION}-installer.exe"
