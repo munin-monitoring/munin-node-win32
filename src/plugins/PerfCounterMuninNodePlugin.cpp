@@ -1,5 +1,5 @@
 /* This file is part of munin-node-win32
- * Copyright (C) 2006-2008 Jory Stone (jcsston@jory.info)
+ * Copyright (C) 2006-2011 Jory Stone (jcsston@jory.info)
  * Support for DERIVE Permon counters by jossh.robb@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   // Create a PDH query
   status = PdhOpenQuery(NULL, 0, &m_PerfQuery);
   if (status != ERROR_SUCCESS) {
-	  _Module.LogError("PerfCounter plugin: %s: PdhOpenQuery error", m_Name.c_str());
+	  _Module.LogError("PerfCounter plugin: %s: PdhOpenQuery error=%x", m_Name.c_str(), status);
 	  return false;
   }
 
@@ -72,7 +72,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   DWORD instanceListLength = 0;
   status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), NULL, &counterListLength, NULL, &instanceListLength, PERF_DETAIL_EXPERT, 0);
   if (status != PDH_MORE_DATA) {
-	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error", m_Name.c_str());
+	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
 	  return false;
   }
 
@@ -87,7 +87,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   if (status != ERROR_SUCCESS) {
     delete [] counterList;
     delete [] instanceList;
-	_Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error", m_Name.c_str());
+	_Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
     return false;  
   }
 
@@ -118,7 +118,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
       // Associate the uptime counter with the query
       status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
 	  if (status != ERROR_SUCCESS) {
-		  _Module.LogError("PerfCounter plugin: %s: PDH add counter error", m_Name.c_str());
+		  _Module.LogError("PerfCounter plugin: %s: PDH add counter error=%x", m_Name.c_str(), status);
 		  return false;
 	  }
       
@@ -131,7 +131,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
     // Associate the uptime counter with the query
     status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
 	if (status != ERROR_SUCCESS) {
-		_Module.LogError("PerfCounter plugin: %s: PDH add counter error", m_Name.c_str());
+		_Module.LogError("PerfCounter plugin: %s: PDH add counter error=%x", m_Name.c_str(), status);
 		return false;
 	}
     
@@ -197,6 +197,8 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
     std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
     std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
     std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
+	std::string explainText = W2AConvert(info->szExplainText);
+	std::string counterName = W2AConvert(info->szCounterName);
     printCount = _snprintf(buffer, len, "graph_title %s\n"
       "graph_category %s\n"
       "graph_args %s\n"
@@ -204,7 +206,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
       "graph_vlabel %s\n", 
       graphTitle.c_str(), graphCategory.c_str(), 
       graphArgs.c_str(),
-      info->szExplainText, info->szCounterName);
+	  explainText.c_str(), counterName.c_str());
     len -= printCount;
     buffer += printCount;
 
