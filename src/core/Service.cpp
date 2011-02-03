@@ -5,7 +5,6 @@
 #include "StdAfx.h"
 #include "Service.h"
 #include "MuninNodeServer.h"
-#include "../extra/FirewallInstallHelper.h"
 
 CService _Module;
 //////////////////////////////////////////////////////////////////////
@@ -202,12 +201,6 @@ BOOL CService::Install()
     return FALSE;
   }
 
-  // Adding firewall rule
-  if (FAILED(AddApplicationToExceptionList(szFilePath, m_szServiceName))) 
-  {
-    ShowMessage(_T("Couldn't add firewall exception rule"));
-  }
-
   if (dwStartupType == SERVICE_AUTO_START)
     StartService(hService, 0, NULL);
 
@@ -258,16 +251,6 @@ BOOL CService::Uninstall(DWORD dwTimeout)
         return FALSE;
       }
     }
-  }
-
-  // Get the executable file path
-  TCHAR szFilePath[_MAX_PATH];
-  ::GetModuleFileName(NULL, szFilePath, _MAX_PATH);
-
-  // Remove firewall rule
-  if (FAILED(RemoveApplicationFromExceptionList(szFilePath))) 
-  {
-    ShowMessage(_T("Couldn't remove firewall exception rule"));
   }
 
   if (!m_EventLog.UnRegisterSource()) 

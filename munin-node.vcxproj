@@ -51,7 +51,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>ws2_32.lib;Iphlpapi.lib;Pdh.lib;msi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;Iphlpapi.lib;Pdh.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,7 +81,6 @@
     <ClCompile Include="src\core\MuninPluginManager.cpp" />
     <ClCompile Include="src\core\Service.cpp" />
     <ClCompile Include="src\core\TString.cpp" />
-    <ClCompile Include="src\extra\FirewallInstallHelper.cpp" />
     <ClCompile Include="src\extra\iniFile.cpp" />
     <ClCompile Include="src\extra\registry.cpp" />
     <ClCompile Include="src\extra\verinfo.cpp" />
@@ -115,7 +114,6 @@
     <ClInclude Include="src\core\MuninPluginManager.h" />
     <ClInclude Include="src\core\Service.h" />
     <ClInclude Include="src\core\TString.h" />
-    <ClInclude Include="src\extra\FirewallInstallHelper.h" />
     <ClInclude Include="src\extra\iniFile.h" />
     <ClInclude Include="src\extra\registry.h" />
     <ClInclude Include="src\extra\verinfo.h" />

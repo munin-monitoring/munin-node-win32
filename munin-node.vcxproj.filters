@@ -17,9 +17,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\extra\FirewallInstallHelper.cpp">
-      <Filter>Plugins</Filter>
-    </ClCompile>
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp">
       <Filter>Plugins</Filter>
     </ClCompile>
@@ -155,9 +152,6 @@
       <Filter>Plugins</Filter>
     </ClInclude>
     <ClInclude Include="src\plugins\external\ExternalMuninNodePlugin.h">
-      <Filter>Plugins</Filter>
-    </ClInclude>
-    <ClInclude Include="src\extra\FirewallInstallHelper.h">
       <Filter>Plugins</Filter>
     </ClInclude>
     <ClInclude Include="src\plugins\disk\HDMuninNodePlugin.h">
