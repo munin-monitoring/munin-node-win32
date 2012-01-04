@@ -86,7 +86,9 @@ int MuninNodeClient::RecvLine(char *line, int len) {
 void *MuninNodeClient::Entry()
 {	
   int ret = 0;
-  static const int BUFFER_SIZE = 8096;
+  // A 4 MiB static buffer should be enough, 
+  // even for chatty multigraph plugins
+  static const int BUFFER_SIZE = 4 * 1024 * 1024; 
   char buffer[BUFFER_SIZE] = {0};
   char hostname[64] = {0};
   int len = 0;
