@@ -62,6 +62,7 @@ int ExternalMuninNodePlugin::GetConfig(char *buffer, int len)
 {
   std::string output = Run("config");
   if (output.length() > 0) {
+    removeAllLF(output);
     strncpy(buffer, output.c_str(), len);
     return 0;
   } 
