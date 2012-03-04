@@ -30,17 +30,52 @@
 #include "../plugins/disk/SMARTMuninNodePlugin.h"
 #include "../plugins/speedfan/SpeedFanNodePlugin.h"
 #include "../plugins/PerfCounterMuninNodePlugin.h"
+#include "../plugins/PerfCounterCustomMuninNodePlugin.h"
 #include "../plugins/external/ExternalMuninNodePlugin.h"
 
 #ifdef _DEBUG
 class MuninPluginManagerTestThread : public JCThread {
-  MuninPluginManager *m_Manager;
+  MuninPluginManager& m_Manager;
 public:
-  MuninPluginManagerTestThread(MuninPluginManager *manager) : m_Manager(manager) {};
+  MuninPluginManagerTestThread(MuninPluginManager& manager) : m_Manager(manager) {};
+
+	void TestPlugins()
+	{
+		// Test Plugins. 
+		// Using a 4MiB buffer, since this class is only used for testing anyway 
+		// and we don't want to run out of space, do we ?
+		const int buffsize = 4 * 1024 * 1024;
+				
+		for (size_t i = 0; i < m_Manager.GetCount(); i++) {
+			MuninNodePlugin* plugin = m_Manager[i];
+			_Module.LogEvent("Name: %s", plugin->GetName());
+			
+			// Config
+			{
+				char* buffer = new char[buffsize];
+				memset(buffer, 0xDEAD, buffsize);
+				buffer[0] = '\0';
+				plugin->GetConfig(buffer,  buffsize);
+				_Module.LogEvent("Config:\n%s", buffer);
+				delete[] buffer;
+			}
+
+			// Values
+			{
+				char* buffer = new char[buffsize];
+				memset(buffer, 0xDEAD, buffsize);
+				buffer[0] = '\0';
+				plugin->GetValues(buffer, buffsize);
+				_Module.LogEvent("Value:\n%s", buffer);
+				delete[] buffer;
+			}
+		}
+	}
 
   virtual void *Entry() {
+	  // Launching TestPlugins() every 5s while the thread is active.
     while (!TestDestroy()) {
-      m_Manager->TestPlugins();
+      TestPlugins();
       for (int i = 0; i < 50 && !TestDestroy(); i++)
         Sleep(100);
     }
@@ -97,6 +132,8 @@ MuninPluginManager::MuninPluginManager()
     }
   }
 
+  // Adding all the Regular PerfCounter
+	{ 
   const char *perfPrefix = PerfCounterMuninNodePlugin::SectionPrefix;
   size_t perfPrefixLen = strlen(perfPrefix);
   for (size_t i = 0; i < g_Config.GetNumKeys(); i++) {
@@ -111,9 +148,28 @@ MuninPluginManager::MuninPluginManager()
       }
     }
   }
+  }
+  
+  // Adding all the Custom PerfCounter
+	{ 
+	  const char *perfPrefix = PerfCounterCustomMuninNodePlugin::SectionPrefix;
+	  size_t perfPrefixLen = strlen(perfPrefix);
+	  for (size_t i = 0; i < g_Config.GetNumKeys(); i++) {
+		std::string keyName = g_Config.GetKeyName(i);
+		if (keyName.compare(0, perfPrefixLen, perfPrefix) == 0) {
+		  PerfCounterCustomMuninNodePlugin *plugin = new PerfCounterCustomMuninNodePlugin(keyName);
+		  if (plugin->IsLoaded()) {
+			AddPlugin(plugin);
+		  } else {
+			_Module.LogError("Failed to load Custom PerfCounter plugin: [%s]", keyName.c_str());
+			delete plugin;
+		  }
+		}
+	  }
+  }
   
 #ifdef _DEBUG
-  t = new MuninPluginManagerTestThread(this);
+  t = new MuninPluginManagerTestThread(*this);
   t->JCThread_AddRef();
   t->Run();  
 #endif
@@ -166,21 +222,4 @@ void MuninPluginManager::FillPluginList(char *buffer, int len)
     }
   }
   strncat(buffer, "\n", len);
-}
-
-void MuninPluginManager::TestPlugins()
-{
-  // Test Plugins
-  char buffer[8096];
-  for (size_t i = 0; i < m_Plugins.size(); i++) {
-    _Module.LogEvent("Name: %s", m_Plugins[i]->GetName());
-    
-    buffer[0] = NULL;
-    m_Plugins[i]->GetConfig(buffer,  sizeof(buffer));
-    _Module.LogEvent("Config:\n%s", buffer);
-    
-    buffer[0] = NULL;
-    m_Plugins[i]->GetValues(buffer, sizeof(buffer));
-    _Module.LogEvent("Value:\n%s", buffer);
-  }
 }

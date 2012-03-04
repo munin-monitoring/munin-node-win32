@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "munin-node", "munin-node.vcxproj", "{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "munin-node", "munin-node.vcxproj", "{8349983F-86B4-1312-5BC8-1AD994F9FF55}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PdhTests", "contrib\PdhTests\PdhTests.vcxproj", "{744C65FC-9C33-4F8A-A2FD-252FD761EE9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +11,14 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Debug|Win32.Build.0 = Debug|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Release|Win32.ActiveCfg = Release|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Release|Win32.Build.0 = Release|Win32
+		{8349983F-86B4-1312-5BC8-1AD994F9FF55}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8349983F-86B4-1312-5BC8-1AD994F9FF55}.Debug|Win32.Build.0 = Debug|Win32
+		{8349983F-86B4-1312-5BC8-1AD994F9FF55}.Release|Win32.ActiveCfg = Release|Win32
+		{8349983F-86B4-1312-5BC8-1AD994F9FF55}.Release|Win32.Build.0 = Release|Win32
+		{744C65FC-9C33-4F8A-A2FD-252FD761EE9E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{744C65FC-9C33-4F8A-A2FD-252FD761EE9E}.Debug|Win32.Build.0 = Debug|Win32
+		{744C65FC-9C33-4F8A-A2FD-252FD761EE9E}.Release|Win32.ActiveCfg = Release|Win32
+		{744C65FC-9C33-4F8A-A2FD-252FD761EE9E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

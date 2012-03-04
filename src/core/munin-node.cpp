@@ -20,16 +20,25 @@
 
 #include "Service.h"
 #include "MuninNodeSettings.h"
-#include "../extra/verinfo.h"
+#include "extra/verinfo.h"
 
 #ifdef _DEBUG
+bool isInHook = false;
 int YourAllocHook(int allocType, void *userData, size_t size, int blockType, long requestNumber, const unsigned char *filename, int lineNumber)
 {
-  //I can use this to find exactly where a leak started
-  if (size == 96 && (requestNumber == 2075 || requestNumber == 1358))
+	if (isInHook || requestNumber == 0) {
+		// Avoid stack overflows and filters out useless junk
+		return TRUE;
+	}
+
+	isInHook = true;
+	// printf("size:%d, requestNumber: %ld\n", size, requestNumber);
+  //I can use this to find exactly where a leak started by setting a conditional breakpoint.S
+  if (requestNumber == -1) 
   {
-    printf("cool");
+    printf("size");
   }
+  isInHook = false;
   return TRUE;
 };
 #endif
@@ -39,9 +48,10 @@ int main(int argc, char* argv[])
 #ifdef _DEBUG
   // Setup the debug options
   _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF 
-    | _CRTDBG_LEAK_CHECK_DF //Check for memory leaks on app exit
-    );//| _CRTDBG_CHECK_ALWAYS_DF);
-  _CrtSetAllocHook(YourAllocHook);	
+    | _CRTDBG_LEAK_CHECK_DF // Check for memory leaks on app exit
+	// | _CRTDBG_CHECK_ALWAYS_DF // Check heap on every alloc/dealloc
+	);
+  //_CrtSetAllocHook(YourAllocHook);
 #endif
 
   // Read in Version Infomation
@@ -55,8 +65,9 @@ int main(int argc, char* argv[])
   char szConfigFilePath[MAX_PATH];
   ::GetModuleFileNameA(NULL, szConfigFilePath, MAX_PATH);
   PathRemoveFileSpecA(szConfigFilePath);
-  PathAppendA(szConfigFilePath, "\\munin-node.ini");
+  PathAppendA(szConfigFilePath, "\\..\\munin-node.ini");
   g_Config.SetPath(szConfigFilePath);
+  g_Config.Trim();
   g_Config.ReadFile();
 
   // Prepare Service modules
@@ -72,27 +83,27 @@ int main(int argc, char* argv[])
     pToken = strtok(argv[1], seps);
     while (pToken)
     {
-      if (!stricmp(pToken, "install"))
+      if (!_stricmp(pToken, "install"))
       {
         return !_Module.Install();
       }
-      else if (!stricmp(pToken, "uninstall"))
+      else if (!_stricmp(pToken, "uninstall"))
       {
         return !_Module.Uninstall();
       }
-      else if (!stricmp(pToken, "quiet"))
+      else if (!_stricmp(pToken, "quiet"))
       {
         FreeConsole();
       }
-      else if (!stricmp(pToken, "unattended"))
+      else if (!_stricmp(pToken, "unattended"))
       {
         _Module.SetQuiet(true);
       }
-      else if (!stricmp(pToken, "run"))
+      else if (!_stricmp(pToken, "run"))
       {
         _Module.m_bService = FALSE;
       }
-      else if (!stricmp(pToken, "help") || !stricmp(pToken, "h") || !stricmp(pToken, "?"))
+      else if (!_stricmp(pToken, "help") || !_stricmp(pToken, "h") || !_stricmp(pToken, "?"))
       {
         printf("%s\n", _Module.GetServiceDisplayName());
         printf("Usage:\n");

@@ -43,9 +43,12 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <CreateHotpatchableImage>true</CreateHotpatchableImage>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
@@ -80,6 +83,7 @@
     <ClCompile Include="src\core\MuninNodeSettings.cpp" />
     <ClCompile Include="src\core\MuninPluginManager.cpp" />
     <ClCompile Include="src\core\Service.cpp" />
+    <ClCompile Include="src\core\Tools.cpp" />
     <ClCompile Include="src\core\TString.cpp" />
     <ClCompile Include="src\extra\iniFile.cpp" />
     <ClCompile Include="src\extra\registry.cpp" />
@@ -96,6 +100,7 @@
     <ClCompile Include="src\plugins\mbm\MBMMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\memory\MemoryMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\network\NetworkMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\PerfCounterCustomMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\process\ProcessesMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\RegistryMuninNodePlugin.cpp" />
@@ -113,6 +118,7 @@
     <ClInclude Include="src\core\MuninNodeSettings.h" />
     <ClInclude Include="src\core\MuninPluginManager.h" />
     <ClInclude Include="src\core\Service.h" />
+    <ClInclude Include="src\core\Tools.h" />
     <ClInclude Include="src\core\TString.h" />
     <ClInclude Include="src\extra\iniFile.h" />
     <ClInclude Include="src\extra\registry.h" />
@@ -130,6 +136,7 @@
     <ClInclude Include="src\plugins\mbm\MBMMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\memory\MemoryMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\network\NetworkMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\PerfCounterCustomMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\process\ProcessesMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\RegistryMuninNodePlugin.h" />
