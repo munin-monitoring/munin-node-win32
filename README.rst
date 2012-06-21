@@ -6,7 +6,8 @@ Introduction
 ------------
 Munin Node for Windows AKA munin-node-win32, is a Windows client for the Munin monitoring system.
 
-It is written in C++ with most plugins built into the executable. Which is different from the standard munin-node client, which only uses external plugins written as shell and Perl scripts.
+It is written in C++ with most plugins built into the executable. 
+This is different from the standard munin-node client, which only uses external plugins written as shell and Perl scripts.
 
 Command Line Usage
 ------------------
