@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "munin-node", "munin-node.vcxproj", "{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "munin-node", "munin-node.vcproj", "{607B3825-C2B1-4BB3-B9B4-CE2BCF704E05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Debug|Win32.Build.0 = Debug|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Release|Win32.ActiveCfg = Release|Win32
-		{8AB26E5C-9C20-1782-4F7C-06B5691F12E2}.Release|Win32.Build.0 = Release|Win32
+		{607B3825-C2B1-4BB3-B9B4-CE2BCF704E05}.Debug|Win32.ActiveCfg = Debug|Win32
+		{607B3825-C2B1-4BB3-B9B4-CE2BCF704E05}.Debug|Win32.Build.0 = Debug|Win32
+		{607B3825-C2B1-4BB3-B9B4-CE2BCF704E05}.Release|Win32.ActiveCfg = Release|Win32
+		{607B3825-C2B1-4BB3-B9B4-CE2BCF704E05}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

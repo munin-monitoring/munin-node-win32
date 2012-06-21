@@ -1,0 +1,4 @@
+*.bak
+*.ncb
+*.suo
+munin-node.vcproj.*
