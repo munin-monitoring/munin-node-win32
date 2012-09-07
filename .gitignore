@@ -1,0 +1,9 @@
+*.bak
+*.ncb
+*.suo
+munin-node.vcproj.*
+Release
+Debug
+contrib/PdhTests/Release
+contrib/PdhTests/Debug
+installer/*.exe
