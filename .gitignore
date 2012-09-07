@@ -1,0 +1,7 @@
+*.bak
+*.ncb
+*.suo
+munin-node.vcproj.*
+bin/Release
+bin/Debug
+installer/*.exe
