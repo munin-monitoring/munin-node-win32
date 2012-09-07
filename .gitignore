@@ -2,6 +2,8 @@
 *.ncb
 *.suo
 munin-node.vcproj.*
-bin/Release
-bin/Debug
+Release
+Debug
+contrib/PdhTests/Release
+contrib/PdhTests/Debug
 installer/*.exe
