@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   char szConfigFilePath[MAX_PATH];
   ::GetModuleFileNameA(NULL, szConfigFilePath, MAX_PATH);
   PathRemoveFileSpecA(szConfigFilePath);
-  PathAppendA(szConfigFilePath, "\\..\\munin-node.ini");
+  PathAppendA(szConfigFilePath, "\\munin-node.ini");
   g_Config.SetPath(szConfigFilePath);
   g_Config.Trim();
   g_Config.ReadFile();
