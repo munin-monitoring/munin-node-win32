@@ -33,7 +33,6 @@ CpuMuninNodePlugin::CpuMuninNodePlugin()
   dbSystemTime = 0;
   liOldIdleTime.QuadPart = 0;
   liOldSystemTime.QuadPart = 0;
-  NtQuerySystemInformation = (PROCNTQSI)GetProcAddress(GetModuleHandle(_T("ntdll")), "NtQuerySystemInformation");
 
   // Setup first call
   CalculateCpuLoad();
@@ -46,45 +45,43 @@ CpuMuninNodePlugin::~CpuMuninNodePlugin()
 
 void CpuMuninNodePlugin::CalculateCpuLoad()
 {
-  if (NtQuerySystemInformation != NULL) {
-    LONG status;
-    SYSTEM_PERFORMANCE_INFORMATION SysPerfInfo;
-    SYSTEM_TIME_INFORMATION SysTimeInfo;
-    SYSTEM_BASIC_INFORMATION SysBaseInfo;
+  LONG status;
+  SYSTEM_PERFORMANCE_INFORMATION SysPerfInfo;
+  SYSTEM_TIME_INFORMATION SysTimeInfo;
+  SYSTEM_BASIC_INFORMATION SysBaseInfo;
 
-    // get number of processors in the system
-    status = NtQuerySystemInformation(SystemBasicInformation, &SysBaseInfo, sizeof(SysBaseInfo), NULL);
-    if (status != NO_ERROR)
-      return;
+  // get number of processors in the system
+  status = NtQuerySystemInformation(SystemBasicInformation, &SysBaseInfo, sizeof(SysBaseInfo), NULL);
+  if (status != NO_ERROR)
+    return;
 
-    // get new system time
-    status = NtQuerySystemInformation(SystemTimeInformation, &SysTimeInfo, sizeof(SysTimeInfo), NULL);
-    if (status!=NO_ERROR)
-      return;
+  // get new system time
+  status = NtQuerySystemInformation(SystemTimeInformation, &SysTimeInfo, sizeof(SysTimeInfo), NULL);
+  if (status!=NO_ERROR)
+    return;
 
-    // get new CPU's idle time
-    status = NtQuerySystemInformation(SystemPerformanceInformation, &SysPerfInfo, sizeof(SysPerfInfo), NULL);
-    if (status != NO_ERROR)
-      return;
+  // get new CPU's idle time
+  status = NtQuerySystemInformation(SystemPerformanceInformation, &SysPerfInfo, sizeof(SysPerfInfo), NULL);
+  if (status != NO_ERROR)
+    return;
 
-    // if it's a first call - skip it
-    if (liOldIdleTime.QuadPart != 0)
-    {
-      // CurrentValue = NewValue - OldValue
-      double diffIdleTime = Li2Double(SysPerfInfo.liIdleTime) - Li2Double(liOldIdleTime);
-      double diffSystemTime = Li2Double(SysTimeInfo.liKeSystemTime) - Li2Double(liOldSystemTime);
+  // if it's a first call - skip it
+  if (liOldIdleTime.QuadPart != 0)
+  {
+    // CurrentValue = NewValue - OldValue
+    double diffIdleTime = Li2Double(SysPerfInfo.liIdleTime) - Li2Double(liOldIdleTime);
+    double diffSystemTime = Li2Double(SysTimeInfo.liKeSystemTime) - Li2Double(liOldSystemTime);
 
-      // CurrentCpuIdle = IdleTime / SystemTime
-      dbIdleTime = diffIdleTime / diffSystemTime;
+    // CurrentCpuIdle = IdleTime / SystemTime
+    dbIdleTime = diffIdleTime / diffSystemTime;
 
-      // CurrentCpuUsage% = 100 - (CurrentCpuIdle * 100) / NumberOfProcessors
-      dbIdleTime = 100.0 - dbIdleTime * 100.0 / (double)SysBaseInfo.bKeNumberProcessors + 0.5;
-    }
-
-    // store new CPU's idle and system time
-    liOldIdleTime = SysPerfInfo.liIdleTime;
-    liOldSystemTime = SysTimeInfo.liKeSystemTime;
+    // CurrentCpuUsage% = 100 - (CurrentCpuIdle * 100) / NumberOfProcessors
+    dbIdleTime = 100.0 - dbIdleTime * 100.0 / (double)SysBaseInfo.bKeNumberProcessors + 0.5;
   }
+
+  // store new CPU's idle and system time
+  liOldIdleTime = SysPerfInfo.liIdleTime;
+  liOldSystemTime = SysTimeInfo.liKeSystemTime;
 }
 
 int CpuMuninNodePlugin::GetValues(char *buffer, int len) 
