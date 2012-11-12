@@ -178,7 +178,7 @@ int JCSocket::Send( const void *pData, int nDataLen, int nFlags )
 
 int JCSocket::SendText( const char *pszText )
 {
-  return Send( pszText, strlen( pszText ) );
+  return Send( pszText, (int)strlen( pszText ) );
 }
 
 
