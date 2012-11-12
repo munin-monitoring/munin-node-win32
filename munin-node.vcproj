@@ -370,6 +370,14 @@
 				RelativePath=".\src\plugins\PerfCounterMuninNodePlugin.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\plugins\RegistryMuninNodePlugin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\plugins\RegistryMuninNodePlugin.h"
+				>
+			</File>
 			<Filter
 				Name="cpu"
 				>
@@ -391,6 +399,14 @@
 				</File>
 				<File
 					RelativePath=".\src\plugins\disk\DiskMuninNodePlugin.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\disk\DiskTimeMuninNodePlugin.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\disk\DiskTimeMuninNodePlugin.h"
 					>
 				</File>
 				<File
@@ -502,6 +518,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="uptime"
+				>
+				<File
+					RelativePath=".\src\plugins\uptime\UptimeMuninNodePlugin.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\uptime\UptimeMuninNodePlugin.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="extra"
@@ -512,6 +540,14 @@
 			</File>
 			<File
 				RelativePath=".\src\extra\iniFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\extra\registry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\extra\registry.h"
 				>
 			</File>
 			<File
