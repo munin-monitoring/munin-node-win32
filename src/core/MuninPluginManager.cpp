@@ -22,10 +22,12 @@
 
 #include "../plugins/cpu/CpuMuninNodePlugin.h"
 #include "../plugins/disk/DiskMuninNodePlugin.h"
+#include "../plugins/disk/DiskTimeMuninNodePlugin.h"
 #include "../plugins/memory/MemoryMuninNodePlugin.h"
 #include "../plugins/network/NetworkMuninNodePlugin.h"
 #include "../plugins/process/ProcessesMuninNodePlugin.h"
 #include "../plugins/mbm/MBMMuninNodePlugin.h"
+#include "../plugins/uptime/UptimeMuninNodePlugin.h"
 #include "../plugins/disk/HDMuninNodePlugin.h"
 #include "../plugins/disk/SMARTMuninNodePlugin.h"
 #include "../plugins/speedfan/SpeedFanNodePlugin.h"
@@ -54,12 +56,16 @@ MuninPluginManager::MuninPluginManager()
 {
   if (g_Config.GetValueB("Plugins", "Disk", true))
     AddPlugin(new DiskMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "DiskTime", true))
+    AddPlugin(new DiskTimeMuninNodePlugin());
   if (g_Config.GetValueB("Plugins", "Memory", true))
     AddPlugin(new MemoryMuninNodePlugin());
  if (g_Config.GetValueB("Plugins", "Processes", true))
     AddPlugin(new ProcessesMuninNodePlugin());
   if (g_Config.GetValueB("Plugins", "Network", true))
     AddPlugin(new NetworkMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Uptime", true))
+    AddPlugin(new UptimeMuninNodePlugin());
   
   if (g_Config.GetValueB("Plugins", "MbmTemp", true))
     AddPlugin(new MBMMuninNodePlugin(mbm::stTemperature));
