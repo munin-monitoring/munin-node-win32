@@ -89,8 +89,8 @@ MuninPluginManager::MuninPluginManager()
   
   if (g_Config.GetValueB("Plugins", "External", true)) {
     int externalTimeout = g_Config.GetValueI("Plugins", "ExternalTimeout", 0);
-    int externalCount = g_Config.NumValues("ExternalPlugin");
-    for (int i = 0; i < externalCount; i++) {
+    size_t externalCount = g_Config.NumValues("ExternalPlugin");
+    for (size_t i = 0; i < externalCount; i++) {
       std::string valueName = g_Config.GetValueName("ExternalPlugin", i); 
       std::string filename = g_Config.GetValue("ExternalPlugin", valueName);
       ExternalMuninNodePlugin *plugin = new ExternalMuninNodePlugin(filename, externalTimeout);

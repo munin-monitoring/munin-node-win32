@@ -63,42 +63,42 @@ public:
   void Reset()                                   {Erase();}
 
   // Returns index of specified key, or noID if not found.
-  long FindKey( string const keyname) const;
+  size_t FindKey( string const keyname) const;
 
   // Returns index of specified value, in the specified key, or noID if not found.
-  long FindValue( unsigned const keyID, string const valuename) const;
+  size_t FindValue( size_t const keyID, string const valuename) const;
 
   // Returns number of keys currently in the ini.
-  unsigned NumKeys() const                       {return names.size();}
-  unsigned GetNumKeys() const                    {return NumKeys();}
+  size_t NumKeys() const                         {return names.size();}
+  size_t GetNumKeys() const                      {return NumKeys();}
 
   // Add a key name.
-  unsigned AddKeyName( string const keyname);
+  size_t AddKeyName( string const keyname);
 
   // Returns key names by index.
-  string KeyName( unsigned const keyID) const;
-  string GetKeyName( unsigned const keyID) const {return KeyName(keyID);}
+  string KeyName( size_t const keyID) const;
+  string GetKeyName( size_t const keyID) const   {return KeyName(keyID);}
 
   // Returns number of values stored for specified key.
-  unsigned NumValues( unsigned const keyID);
-  unsigned GetNumValues( unsigned const keyID)   {return NumValues( keyID);}
-  unsigned NumValues( string const keyname);
-  unsigned GetNumValues( string const keyname)   {return NumValues( keyname);}
+  size_t NumValues( size_t const keyID);
+  size_t GetNumValues( size_t const keyID)       {return NumValues( keyID);}
+  size_t NumValues( string const keyname);
+  size_t GetNumValues( string const keyname)     {return NumValues( keyname);}
 
   // Returns value name by index for a given keyname or keyID.
-  string ValueName( unsigned const keyID, unsigned const valueID) const;
-  string GetValueName( unsigned const keyID, unsigned const valueID) const {
+  string ValueName( size_t const keyID, size_t const valueID) const;
+  string GetValueName( size_t const keyID, size_t const valueID) const {
     return ValueName( keyID, valueID);
   }
-  string ValueName( string const keyname, unsigned const valueID) const;
-  string GetValueName( string const keyname, unsigned const valueID) const {
+  string ValueName( string const keyname, size_t const valueID) const;
+  string GetValueName( string const keyname, size_t const valueID) const {
     return ValueName( keyname, valueID);
   }
 
   // Gets value of [keyname] valuename =.
   // Overloaded to return string, int, and double.
   // Returns defValue if key/value not found.
-  string GetValue( unsigned const keyID, unsigned const valueID, string const defValue = "");
+  string GetValue( size_t const keyID, size_t const valueID, string const defValue = "");
   string GetValue(string const keyname, string const valuename, string const defValue = ""); 
   int    GetValueI(string const keyname, string const valuename, int const defValue = 0);
   bool   GetValueB(string const keyname, string const valuename, bool const defValue = false) {
@@ -118,7 +118,7 @@ public:
   // Specify the optional paramter as false (0) if you do not want it to create
   // the key if it doesn't exist. Returns true if data entered, false otherwise.
   // Overloaded to accept string, int, and double.
-  bool SetValue( unsigned const keyID, unsigned const valueID, string const value);
+  bool SetValue( size_t const keyID, size_t const valueID, string const value);
   bool SetValue( string const keyname, string const valuename, string const value, bool const create = true);
   bool SetValueI( string const keyname, string const valuename, int const value, bool const create = true);
   bool SetValueB( string const keyname, string const valuename, bool const value, bool const create = true) {
@@ -139,13 +139,13 @@ public:
   // Header comments are those comments before the first key.
   //
   // Number of header comments.
-  unsigned NumHeaderComments()                  {return comments.size();}
+  size_t   NumHeaderComments()                  {return comments.size();}
   // Add a header comment.
   void     HeaderComment( string const comment);
   // Return a header comment.
-  string   HeaderComment( unsigned const commentID) const;
+  string   HeaderComment( size_t const commentID) const;
   // Delete a header comment.
-  bool     DeleteHeaderComment( unsigned commentID);
+  bool     DeleteHeaderComment( size_t commentID);
   // Delete all header comments.
   void     DeleteHeaderComments()               {comments.clear();}
 
@@ -156,19 +156,19 @@ public:
   // the CIniFile::WriteFile() is called.
   //
   // Number of key comments.
-  unsigned NumKeyComments( unsigned const keyID) const;
-  unsigned NumKeyComments( string const keyname) const;
+  size_t   NumKeyComments( size_t const keyID) const;
+  size_t   NumKeyComments( string const keyname) const;
   // Add a key comment.
-  bool     KeyComment( unsigned const keyID, string const comment);
+  bool     KeyComment( size_t const keyID, string const comment);
   bool     KeyComment( string const keyname, string const comment);
   // Return a key comment.
-  string   KeyComment( unsigned const keyID, unsigned const commentID) const;
-  string   KeyComment( string const keyname, unsigned const commentID) const;
+  string   KeyComment( size_t const keyID, size_t const commentID) const;
+  string   KeyComment( string const keyname, size_t const commentID) const;
   // Delete a key comment.
-  bool     DeleteKeyComment( unsigned const keyID, unsigned const commentID);
-  bool     DeleteKeyComment( string const keyname, unsigned const commentID);
+  bool     DeleteKeyComment( size_t const keyID, size_t const commentID);
+  bool     DeleteKeyComment( string const keyname, size_t const commentID);
   // Delete all comments for a key.
-  bool     DeleteKeyComments( unsigned const keyID);
+  bool     DeleteKeyComments( size_t const keyID);
   bool     DeleteKeyComments( string const keyname);
 };
 
