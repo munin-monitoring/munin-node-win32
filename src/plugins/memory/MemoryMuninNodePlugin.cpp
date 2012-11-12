@@ -46,10 +46,10 @@ int MemoryMuninNodePlugin::GetConfig(char *buffer, int len)
     "free.label unused\n"
     "free.draw STACK\n"
     "free.info Wasted memory. Memory that is not used for anything at all.\n"
-    //"committed.label committed\n"
-    //"committed.draw LINE2\n"
-    //"committed.warn 625410048\n"
-    //"committed.info The amount of memory that would be used if all the memory that's been allocated were to be used.\n"
+    "committed.label committed\n"
+    "committed.draw LINE2\n"
+    "committed.warn 625410048\n"
+    "committed.info The amount of memory that would be used if all the memory that's been allocated were to be used.\n"
     ".\n", len);
   return 0;
 }
@@ -62,7 +62,7 @@ int MemoryMuninNodePlugin::GetValues(char *buffer, int len)
   _snprintf(buffer, len, "apps.value %llu\n"
     "swap.value %llu\n"
     "free.value %llu\n"
-    //"committed.value %u\n"
-    ".\n", mem.ullTotalPhys-mem.ullAvailPhys, mem.ullTotalPageFile-mem.ullAvailPageFile, mem.ullAvailPhys);
+    "committed.value %u\n"
+    ".\n", mem.ullTotalPhys-mem.ullAvailPhys, mem.ullTotalPageFile-mem.ullTotalPhys, mem.ullAvailPhys, mem.ullTotalPageFile-mem.ullAvailPageFile);
   return 0;
 }
