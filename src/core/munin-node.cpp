@@ -72,27 +72,27 @@ int main(int argc, char* argv[])
     pToken = strtok(argv[1], seps);
     while (pToken)
     {
-      if (!stricmp(pToken, "install"))
+      if (!_stricmp(pToken, "install"))
       {
         return !_Module.Install();
       }
-      else if (!stricmp(pToken, "uninstall"))
+      else if (!_stricmp(pToken, "uninstall"))
       {
         return !_Module.Uninstall();
       }
-      else if (!stricmp(pToken, "quiet"))
+      else if (!_stricmp(pToken, "quiet"))
       {
         FreeConsole();
       }
-      else if (!stricmp(pToken, "unattended"))
+      else if (!_stricmp(pToken, "unattended"))
       {
         _Module.SetQuiet(true);
       }
-      else if (!stricmp(pToken, "run"))
+      else if (!_stricmp(pToken, "run"))
       {
         _Module.m_bService = FALSE;
       }
-      else if (!stricmp(pToken, "help") || !stricmp(pToken, "h") || !stricmp(pToken, "?"))
+      else if (!_stricmp(pToken, "help") || !_stricmp(pToken, "h") || !_stricmp(pToken, "?"))
       {
         printf("%s\n", _Module.GetServiceDisplayName());
         printf("Usage:\n");

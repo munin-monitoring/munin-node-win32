@@ -8,7 +8,7 @@ class DiskTimeMuninNodePlugin : public MuninNodePlugin
 {
 public:
   DiskTimeMuninNodePlugin();
-  ~DiskTimeMuninNodePlugin();
+  virtual ~DiskTimeMuninNodePlugin();
 
   virtual const char *GetName() { return "disktime"; };
   virtual int GetConfig(char *buffer, int len);

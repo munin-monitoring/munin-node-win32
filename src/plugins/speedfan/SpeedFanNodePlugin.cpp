@@ -289,7 +289,7 @@ char *ReadInFile(const char *filename)
     return NULL;
   }
   fseek(exp_file, 0, SEEK_END);
-  long len = ftell(exp_file);  
+  size_t len = ftell(exp_file);
   char *script = new char[len+1];
   fseek(exp_file, 0, SEEK_SET);
   len = fread(script, 1, len, exp_file);
