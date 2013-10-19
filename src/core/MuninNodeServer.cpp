@@ -62,6 +62,8 @@ void *MuninNodeServer::Entry()
     if (m_ServerSocket.Accept(client)) {
       // TODO: Add ip address matching, http://stackoverflow.com/questions/594112/matching-an-ip-to-a-cidr-mask-in-php5
       const char *ipAddress = inet_ntoa(client->m_Address.sin_addr);
+      if( !ipAddress )
+         ipAddress = "unknown address";
 	  if (masterAddress == "*" || ipAddress == masterAddress) {
 		  if(logConnections){
 			_Module.LogEvent("Connection from %s", ipAddress);
