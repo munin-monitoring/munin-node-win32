@@ -44,7 +44,8 @@
 #include <Iphlpapi.h>
 #include <DelayImp.h>
 
-typedef struct _SYSTEM_BASIC_INFORMATION {
+typedef struct
+{
   DWORD dwUnknown1;
   ULONG uKeMaximumIncrement;
   ULONG uPageSize;
@@ -58,7 +59,7 @@ typedef struct _SYSTEM_BASIC_INFORMATION {
   BYTE bKeNumberProcessors;
   BYTE bUnknown2;
   WORD wUnknown3;
-} SYSTEM_BASIC_INFORMATION, *PSYSTEM_BASIC_INFORMATION;
+} SYSTEM_BASIC_INFORMATION;
 
 typedef struct _SYSTEM_PERFORMANCE_INFORMATION
 {
@@ -138,74 +139,13 @@ typedef struct _SYSTEM_PERFORMANCE_INFORMATION
   ULONG SystemCalls;
 } SYSTEM_PERFORMANCE_INFORMATION, *PSYSTEM_PERFORMANCE_INFORMATION;
 
-typedef struct _SYSTEM_TIMEOFDAY_INFORMATION {
+typedef struct
+{
   LARGE_INTEGER liKeBootTime;
   LARGE_INTEGER liKeSystemTime;
   LARGE_INTEGER liExpTimeZoneBias;
   ULONG uCurrentTimeZoneId;
   DWORD dwReserved;
-} SYSTEM_TIMEOFDAY_INFORMATION, *PSYSTEM_TIMEOFDAY_INFORMATION; /* was SYSTEM_TIME_INFORMATION */;
-
-typedef struct _SYSTEM_INTERRUPT_INFORMATION {
-  ULONG ContextSwitches;
-  ULONG DpcCount; /* FIXME */
-  ULONG DpcRate; /* FIXME */
-  ULONG TimeIncrement;
-  ULONG DpcBypassCount; /* FIXME */
-  ULONG ApcBypassCount; /* FIXME */
-} SYSTEM_INTERRUPT_INFORMATION, *PSYSTEM_INTERRUPT_INFORMATION;
-
-typedef enum _SYSTEM_INFORMATION_CLASS {
-  SystemBasicInformation = 0,
-  SystemPerformanceInformation = 2,
-  SystemTimeOfDayInformation = 3,
-  SystemProcessInformation = 5,
-  SystemProcessorPerformanceInformation = 8,
-  SystemModuleInformation = 11,
-  SystemHandleInformation = 16,
-  SystemPageFileInformation = 18,
-  SystemCacheInformation = 21,
-  SystemInterruptInformation = 23,
-  SystemDpcBehaviourInformation = 24,
-  SystemFullMemoryInformation = 25,
-  SystemNotImplemented6 = 25,
-  SystemLoadImage = 26,
-  SystemUnloadImage = 27,
-  SystemTimeAdjustmentInformation = 28,
-  SystemTimeAdjustment = 28,
-  SystemSummaryMemoryInformation = 29,
-  SystemNotImplemented7 = 29,
-  SystemNextEventIdInformation = 30,
-  SystemEventIdsInformation = 31,
-  SystemCrashDumpInformation = 32,
-  SystemExceptionInformation = 33,
-  SystemCrashDumpStateInformation = 34,
-  SystemKernelDebuggerInformation = 35,
-  SystemContextSwitchInformation = 36,
-  SystemRegistryQuotaInformation = 37,
-  SystemCurrentTimeZoneInformation = 44,
-  SystemLookasideInformation = 45,
-  SystemSetTimeSlipEvent = 46,
-  SystemCreateSession = 47,
-  SystemDeleteSession = 48,
-  SystemInvalidInfoClass4 = 49,
-  SystemRangeStartInformation = 50,
-  SystemVerifierInformation = 51,
-  SystemAddVerifier = 52,
-  SystemSessionProcessesInformation = 53,
-  SystemLogicalProcessorInformation = 73,
-  SystemInformationClassMax
-} SYSTEM_INFORMATION_CLASS, *PSYSTEM_INFORMATION_CLASS;
-
-typedef struct _SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION {
-  LARGE_INTEGER IdleTime;
-  LARGE_INTEGER KernelTime;
-  LARGE_INTEGER UserTime;
-  LARGE_INTEGER DpcTime;
-  LARGE_INTEGER InterruptTime;
-  ULONG InterruptCount;
-} SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION, *PSYSTEM_PROCESSOR_PERFORMANCE_INFORMATION;
-
-typedef LONG NTSTATUS;
+} SYSTEM_TIME_INFORMATION;
 
 extern "C" DWORD __stdcall NtQuerySystemInformation(DWORD, PVOID, ULONG, PULONG);

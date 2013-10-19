@@ -47,7 +47,7 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
 {
   LONG status;
   SYSTEM_PERFORMANCE_INFORMATION SysPerfInfo;
-  SYSTEM_TIMEOFDAY_INFORMATION SysTimeInfo;
+  SYSTEM_TIME_INFORMATION SysTimeInfo;
   SYSTEM_BASIC_INFORMATION SysBaseInfo;
 
   // get number of processors in the system
