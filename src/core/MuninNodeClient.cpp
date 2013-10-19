@@ -20,6 +20,7 @@
 #include "MuninNodeClient.h"
 #include "Service.h"
 #include "../extra/verinfo.h"
+#include <vector>
 
 MuninNodeClient::MuninNodeClient(JCSocket *client, JCThread *server, MuninPluginManager *pluginManager) 
   : m_Client(client)
@@ -86,10 +87,11 @@ int MuninNodeClient::RecvLine(char *line, int len) {
 void *MuninNodeClient::Entry()
 {	
   int ret = 0;
-  // A 4 MiB static buffer should be enough, 
+  // A 4 MiB buffer should be enough, 
   // even for chatty multigraph plugins
   static const int BUFFER_SIZE = 4 * 1024 * 1024; 
-  char buffer[BUFFER_SIZE] = {0};
+  std::vector<char> bytes( BUFFER_SIZE );
+  char* buffer = &bytes[0];
   char hostname[64] = {0};
   int len = 0;
   
