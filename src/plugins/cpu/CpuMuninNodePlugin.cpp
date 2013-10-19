@@ -69,7 +69,7 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
   if (liOldIdleTime.QuadPart != 0)
   {
     // CurrentValue = NewValue - OldValue
-    double diffIdleTime = Li2Double(SysPerfInfo.IdleTime) - Li2Double(liOldIdleTime);
+    double diffIdleTime = Li2Double(SysPerfInfo.liIdleTime) - Li2Double(liOldIdleTime);
     double diffSystemTime = Li2Double(SysTimeInfo.liKeSystemTime) - Li2Double(liOldSystemTime);
 
     // CurrentCpuIdle = IdleTime / SystemTime
@@ -80,7 +80,7 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
   }
 
   // store new CPU's idle and system time
-  liOldIdleTime = SysPerfInfo.IdleTime;
+  liOldIdleTime = SysPerfInfo.liIdleTime;
   liOldSystemTime = SysTimeInfo.liKeSystemTime;
 }
 
