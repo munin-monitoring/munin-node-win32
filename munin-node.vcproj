@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_win32.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -151,7 +151,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_win32.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -234,7 +234,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_X64.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -320,7 +320,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_X64.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
