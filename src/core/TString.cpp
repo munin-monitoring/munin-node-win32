@@ -7,10 +7,10 @@ std::string W2AConvert(std::wstring t) {
 	int len;
 
     // Get the converted length
-    len = WideCharToMultiByte(CP_UTF8, 0, t.c_str(), t.length(), NULL, 0, NULL, NULL);
+    len = WideCharToMultiByte(CP_UTF8, 0, t.c_str(), (int)t.length(), NULL, 0, NULL, NULL);
 	s.resize(len);
     // Convert string
-    WideCharToMultiByte(CP_UTF8, 0, t.c_str(), t.length(), (char *)s.c_str(), s.length(), NULL, NULL);
+    WideCharToMultiByte(CP_UTF8, 0, t.c_str(), (int)t.length(), (char *)s.c_str(), (int)s.length(), NULL, NULL);
 
 	return s;
 };
@@ -20,10 +20,10 @@ std::wstring A2WConvert(std::string t) {
 	int len;
 
     // Get the converted length
-    len = MultiByteToWideChar(CP_UTF8, 0, t.c_str(), t.length(), NULL, 0);
+    len = MultiByteToWideChar(CP_UTF8, 0, t.c_str(), (int)t.length(), NULL, 0);
 	s.resize(len);
     // Convert string
-    MultiByteToWideChar(CP_UTF8, 0, t.c_str(), t.length(), (wchar_t *)s.c_str(), s.length());
+    MultiByteToWideChar(CP_UTF8, 0, t.c_str(), (int)t.length(), (wchar_t *)s.c_str(), (int)s.length());
 
 	return s;
 };

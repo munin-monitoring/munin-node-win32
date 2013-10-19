@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_win32.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -151,7 +151,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_win32.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -188,8 +188,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="bin.x64/Debug"
+			IntermediateDirectory="bin.x64/Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -234,7 +234,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_X64.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories=""
@@ -270,8 +270,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="bin.x64/Release"
+			IntermediateDirectory="bin.x64/Release"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -320,7 +320,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib Pdh.lib msi.lib $(ProjectDir)/ntdll_X64.lib"
 				OutputFile="$(OutDir)/munin-node.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
@@ -370,6 +370,14 @@
 				RelativePath=".\src\plugins\PerfCounterMuninNodePlugin.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\plugins\RegistryMuninNodePlugin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\plugins\RegistryMuninNodePlugin.h"
+				>
+			</File>
 			<Filter
 				Name="cpu"
 				>
@@ -391,6 +399,14 @@
 				</File>
 				<File
 					RelativePath=".\src\plugins\disk\DiskMuninNodePlugin.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\disk\DiskTimeMuninNodePlugin.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\disk\DiskTimeMuninNodePlugin.h"
 					>
 				</File>
 				<File
@@ -502,6 +518,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="uptime"
+				>
+				<File
+					RelativePath=".\src\plugins\uptime\UptimeMuninNodePlugin.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\plugins\uptime\UptimeMuninNodePlugin.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="extra"
@@ -512,6 +540,14 @@
 			</File>
 			<File
 				RelativePath=".\src\extra\iniFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\extra\registry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\extra\registry.h"
 				>
 			</File>
 			<File
