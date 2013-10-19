@@ -162,7 +162,7 @@ void CService::Run()
   else
   {
     // Let the server go for a few seconds
-    Sleep(10 * 1000);
+    Sleep(100 * 1000);
   }
 
   LogEvent("Stopping Server Thread");
@@ -316,6 +316,7 @@ void CService::LogEvent(LPCSTR pFormat, ...)
     // As we don't have an event log handle, just write the error to the console.
     printf(chMsg);
     printf("\n");
+    fflush(stdout);
   }
 }
 
@@ -339,5 +340,6 @@ void CService::LogError(LPCSTR pFormat, ...)
 	printf("ERROR:");
     printf(chMsg);
     printf("\n");
+    fflush(stdout);
   }
 }
