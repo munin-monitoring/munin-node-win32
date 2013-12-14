@@ -15,6 +15,7 @@ public:
   static const char *SectionPrefix;
 private:
   bool OpenCounter();
+  const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR *englishName);
 
   bool m_Loaded;
   std::string m_SectionName;
