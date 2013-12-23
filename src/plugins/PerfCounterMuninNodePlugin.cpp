@@ -21,6 +21,7 @@
 #include "PerfCounterMuninNodePlugin.h"
 
 #include "../core/Service.h"
+#include "deelx.h"
 
 const char *PerfCounterMuninNodePlugin::SectionPrefix = "PerfCounterPlugin_";
 
@@ -28,6 +29,39 @@ PerfCounterMuninNodePlugin::PerfCounterMuninNodePlugin(const std::string &sectio
   : m_SectionName(sectionName)
 {
   m_PerfQuery = NULL;
+
+  DWORD regBufferSize = 65536;
+  TCHAR *regBuffer;
+  DWORD status;
+
+  do {
+	  // allocate memory and try to query registry
+	  regBuffer = new TCHAR[regBufferSize];
+	  status = RegQueryValueEx(HKEY_PERFORMANCE_DATA, L"Counter 009", NULL, NULL, (LPBYTE)regBuffer, &regBufferSize);
+
+	  if (status == ERROR_MORE_DATA) {
+		  // resize
+		  delete regBuffer;
+		  regBufferSize += 16384;
+	  }
+	  else {
+		  if (status != ERROR_SUCCESS) {
+			  delete regBuffer;
+			  regBufferSize = 0;
+			  _Module.LogEvent("PerfCounter plugin: %s: RegQueryValueEx error=%x", m_SectionName.c_str(), status);
+			  break;
+		  }
+	  }
+  } while (status != ERROR_SUCCESS);
+
+  if (regBufferSize > 0) {
+	  // create map of pdh index -> pdh name
+	  for (TCHAR *idx = regBuffer; *idx; idx += _tcslen(idx) + 1) {
+		  englishCounterNames[_ttol(idx)] = (idx += _tcslen(idx) + 1);
+	  }
+	  delete regBuffer;
+  }
+
   m_Loaded = OpenCounter();
 }
 
@@ -46,50 +80,44 @@ PerfCounterMuninNodePlugin::~PerfCounterMuninNodePlugin()
 
 const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR *englishName)
 {
-	TCHAR *regBuffer;
-	DWORD regBufferSize = 4096;
-	DWORD status;
-
-	do {
-		regBuffer = new TCHAR[regBufferSize];
-		status = RegQueryValueEx(HKEY_PERFORMANCE_DATA, L"Counter 009", NULL, NULL, (LPBYTE)regBuffer, &regBufferSize);
-
-		if (status == ERROR_MORE_DATA) {
-			delete regBuffer;
-			regBufferSize += 4096;
-		} else {
-			if (status != ERROR_SUCCESS) {
-				delete regBuffer;
-				_Module.LogEvent("PerfCounter plugin: %s: RegQueryValueEx error=%x", m_Name.c_str(), status);
-				return englishName;
-			}
-		}
-	} while (status != ERROR_SUCCESS);
-
+	if (englishCounterNames.empty()) {
+		return englishName;
+	}
 	DWORD fIndex = -1;
-
-	for (TCHAR *idx = regBuffer; *idx; idx += wcslen(idx) + 1) {
-		TCHAR *cName = idx + wcslen(idx) + 1;
-		if (_wcsicmp(cName, englishName) == 0) {
-			fIndex = _wtol(idx);
+	// try to find the name in the map of pdh objects&counters
+	for (std::map<DWORD, TString>::iterator it = englishCounterNames.begin(); it != englishCounterNames.end(); ++it) {
+		if (!it->second.compare(englishName)) {
+			fIndex = it->first;
 			break;
 		}
-		idx = cName;
 	}
+	// not found
+	if (fIndex < 0)
+		return englishName;
 
-	delete regBuffer;
-	
+	DWORD status;
 	DWORD bufSize = 0;
 	PdhLookupPerfNameByIndex(NULL, fIndex, NULL, &bufSize);
 	TCHAR *localName = new TCHAR[bufSize];
 	status = PdhLookupPerfNameByIndex(NULL, fIndex, localName, &bufSize);
 	if (status != ERROR_SUCCESS) {
-		_Module.LogError("PerfCounter plugin: %s: Could not find a local name for %ls, error=%x", m_Name.c_str(), englishName, status);
+		// can happen, i.e. if the name is "*"
+		_Module.LogEvent("PerfCounter plugin: %s: Could not find a local name for %ls, error=%x", m_Name.c_str(), englishName, status);
 		return englishName;
 	}
 	return localName;
 }
 
+const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterEnglishName(const TCHAR *localName)
+{
+	DWORD status;
+	DWORD fIndex;
+	status = PdhLookupPerfIndexByNameW(NULL, localName, &fIndex);
+	if (status == ERROR_SUCCESS && englishCounterNames.count(fIndex) > 0) {
+		return englishCounterNames.at(fIndex).c_str();
+	}
+	return localName;
+}
 
 bool PerfCounterMuninNodePlugin::OpenCounter()
 {
@@ -114,79 +142,111 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 
   TString objectName = A2TConvert(g_Config.GetValue(m_SectionName, "Object", "LogicalDisk"));
   TString counterName = A2TConvert(g_Config.GetValue(m_SectionName, "Counter", "% Disk Time"));
-  
-  DWORD counterListLength = 0;  
-  DWORD instanceListLength = 0;
-  if (g_Config.GetValueB(m_SectionName, "UseEnglishObjectNames", true)) {
+  TString instanceName = A2TConvert(g_Config.GetValue(m_SectionName, "Instance", "*"));
+
+  bool useEnglishNames = g_Config.GetValueB(m_SectionName, "UseEnglishObjectNames", true);
+  if (useEnglishNames) {
 	  counterName = GetPdhCounterLocalizedName(counterName.c_str());
 	  objectName = GetPdhCounterLocalizedName(objectName.c_str());
+	  // NB: instance names are not localized
   }
-  status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), NULL, &counterListLength, NULL, &instanceListLength, PERF_DETAIL_EXPERT, 0);
+
+  TCHAR *counterPath = new TCHAR[MAX_PATH];
+
+  status = _snwprintf(counterPath, MAX_PATH, _T("\\%s(%s)\\%s"), objectName.c_str(), instanceName.c_str(), counterName.c_str());
+  DWORD pathListBufsz = 0;
+  status = PdhExpandWildCardPath(NULL, counterPath, NULL, &pathListBufsz, 0);
   if (status != PDH_MORE_DATA) {
-	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
+	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath %s error=%x", m_Name.c_str(), counterPath, status);
+	  return false;
+  }
+  TCHAR *pathList = new TCHAR[pathListBufsz+2];
+  status = PdhExpandWildCardPath(NULL, counterPath, (PZZTSTR)pathList, &pathListBufsz, 0);
+  if (status != ERROR_SUCCESS) {
+	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath error=%x", m_Name.c_str(), status);
 	  return false;
   }
 
-  TCHAR *counterList = new TCHAR[counterListLength+2];
-  TCHAR *instanceList = new TCHAR[instanceListLength+2];
-  counterList[0] = NULL;
-  instanceList[0] = NULL;
-  counterList[1] = NULL;
-  instanceList[1] = NULL;
+  // read config
+  TString includeRE = A2TConvert(g_Config.GetValue(m_SectionName, "IncludePaths", ".+"));
+  TString excludeRE = A2TConvert(g_Config.GetValue(m_SectionName, "ExcludePaths", "^$"));
 
-  status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), counterList, &counterListLength, instanceList, &instanceListLength, PERF_DETAIL_EXPERT, 0);
-  if (status != ERROR_SUCCESS) {
-    delete [] counterList;
-    delete [] instanceList;
-	_Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
-    return false;  
-  }
+  // create regex matchers
+  CRegexpT <TCHAR> includeRegEx(includeRE.c_str(), IGNORECASE);
+  CRegexpT <TCHAR> excludeRegEx(excludeRE.c_str(), IGNORECASE);
 
-  int pos = 0;
-  TCHAR *instanceName = instanceList;
-  while (instanceName[0] != NULL) {
-    std::string counterInstanceName = T2AConvert(instanceName);
-    m_CounterNames.push_back(counterInstanceName);
-    while (instanceName[0] != NULL)
-      instanceName++;
-    instanceName++;
-  }
-  delete [] counterList;
-  delete [] instanceList;
-
-  TCHAR counterPath[MAX_PATH] = {0};
   HCOUNTER counterHandle;
-  if (!m_CounterNames.empty()) {
-    if (g_Config.GetValueB(m_SectionName, "DropTotal", true)) {
-      assert(m_CounterNames.back().compare("_Total") == 0);
-      // We drop the last instance name as it is _Total
-      m_CounterNames.pop_back();
-    }
-
-    for (size_t i = 0; i < m_CounterNames.size(); i++) {
-      TString instanceNameStr = A2TConvert(m_CounterNames[i]);
-      _sntprintf(counterPath, MAX_PATH, _T("\\%s(%s)\\%s"), objectName.c_str(), instanceNameStr.c_str(), counterName.c_str());
-      // Associate the uptime counter with the query
-      status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
+  for (; *pathList; pathList += _tcslen(pathList) + 1) {
+	  /* anatomy of a PDH path: \\machine\object(instance)\counter
+	   * anomalies of a PDH path: the instance name is optional, and
+	   * may contain parantheses and/or backslashes
+	   * thus, the safest way is to check for the first '(' and the
+	   * last '\' to separate the object, counter, instance names
+	   */
+	  int backslashes[2] = {0, 0};
+	  int para = 0;
+	  int idx;
+	  for (idx = 2; pathList[idx]; idx++) {
+		  if (pathList[idx] == '\\') {
+			  if (backslashes[0]) {
+				  backslashes[1] = idx;
+			  } else {
+				  backslashes[0] = idx;
+			  }
+		  } else if (pathList[idx] == '(' && (!para) && backslashes[0]) {
+			  para = idx;
+		  }
+	  }
+	  DWORD instPos = para ? para : backslashes[1];
+	  TCHAR *oName = new TCHAR[instPos - backslashes[0]];
+	  TCHAR *cName = new TCHAR[idx - backslashes[1] + 1];
+	  TCHAR *iName = new TCHAR[backslashes[1] - para + 1];
+	  // copy the object name
+	  wcsncpy(oName, pathList + backslashes[0] + 1, instPos - backslashes[0] - 1);
+	  oName[instPos - backslashes[0] - 1] = 0;
+	  // copy the counter name (end of complete path, so \0 already exists)
+	  wcsncpy(cName, pathList + backslashes[1] + 1, idx - backslashes[1]);
+	  // if there's an instance name, copy it, too.
+	  if (para) {
+		  wcsncpy(iName, pathList + para, backslashes[1] - para);
+	  }
+	  iName[backslashes[1] - para] = 0;
+	  TCHAR *matchPath;
+	  // use regex matching either on the original path or the
+	  // back-translated constructed path
+	  if (useEnglishNames) {
+		  matchPath = new TCHAR[MAX_PATH];
+		  _snwprintf(matchPath, MAX_PATH, _T("\\%s%s\\%s"), GetPdhCounterEnglishName(oName), iName, GetPdhCounterEnglishName(cName));
+	  } else {
+		  matchPath = pathList;
+	  }
+	  delete oName;
+	  delete cName;
+	  delete iName;
+	  // handle includes & excludes
+	  if (!includeRegEx.MatchExact(matchPath).IsMatched()
+		  || excludeRegEx.MatchExact(matchPath).IsMatched()) {
+		  if (useEnglishNames) {
+			  delete matchPath;
+		  }
+		  continue;
+	  }
+	  if (useEnglishNames) {
+		  delete matchPath;
+	  }
+	  // add the counter
+	  status = PdhAddCounter(m_PerfQuery, pathList, 0, &counterHandle);
 	  if (status != ERROR_SUCCESS) {
 		  _Module.LogError("PerfCounter plugin: %s: PDH add counter error=%x", m_Name.c_str(), status);
 		  return false;
 	  }
-      
-      m_Counters.push_back(counterHandle);
-    }
-  } else {
-    // A counter with a single instance (Uptime for example)
-    m_CounterNames.push_back("0");
-    _sntprintf(counterPath, MAX_PATH, _T("\\%s\\%s"), objectName.c_str(), counterName.c_str());
-    // Associate the uptime counter with the query
-    status = PdhAddCounter(m_PerfQuery, counterPath, 0, &counterHandle);
-	if (status != ERROR_SUCCESS) {
-		_Module.LogError("PerfCounter plugin: %s: PDH add counter error=%x", m_Name.c_str(), status);
-		return false;
-	}
-    
-    m_Counters.push_back(counterHandle);
+
+	  // replace the backslash before the counter name with a space
+	  pathList[backslashes[1]] = ' ';
+
+	  _Module.LogEvent("PerfCounter plugin: %s: added counter %ls", m_Name.c_str(), pathList);
+	  m_Counters.push_back(counterHandle);
+	  m_CounterNames.push_back(T2AConvert(pathList + backslashes[0] + 1));
   }
   
   // Collect init data
@@ -232,17 +292,50 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 
 int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len) 
 {  
-  if (!m_Counters.empty()) {
-    PDH_STATUS status;  
-    DWORD infoSize = 0;
-    status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, NULL);
-    if (status != PDH_MORE_DATA)
-      return -1;
+	if (!m_Counters.empty()) {
+		PDH_STATUS status;
+		DWORD infoSize = 0;
+		status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, NULL);
+		if (status != PDH_MORE_DATA)
+			return -1;
 
-    PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
-    status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, info);
-    if (status != ERROR_SUCCESS)
-      return -1;
+		PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
+		status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, info);
+		if (status != ERROR_SUCCESS)
+			return -1;
+
+		int printCount;
+		std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
+		std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
+		std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
+		std::string explainText = W2AConvert(info->szExplainText);
+		std::string counterName = W2AConvert(info->szCounterName);
+		printCount = _snprintf(buffer, len, "graph_title %s\n"
+			"graph_category %s\n"
+			"graph_args %s\n"
+			"graph_info %s\n"
+			"graph_vlabel %s\n",
+			graphTitle.c_str(), graphCategory.c_str(),
+			graphArgs.c_str(),
+			explainText.c_str(), counterName.c_str());
+		len -= printCount;
+		buffer += printCount;
+
+		free(info);
+
+		std::string graphDraw = g_Config.GetValue(m_SectionName, "GraphDraw", "LINE");
+		std::string counterType = g_Config.GetValue(m_SectionName, "CounterType", "GAUGE");
+
+		std::string minValue;
+		std::string minValueNumbered;
+
+		if (counterType == "DERIVE") {
+			minValue = "%s.min 0\n";
+			minValueNumbered = "%s_%i_.min 0\n";
+		}
+		else {
+			minValue = minValueNumbered = "";
+		}
 
     int printCount;
     std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
@@ -260,61 +353,65 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 	  explainText.c_str(), counterName.c_str());
     len -= printCount;
     buffer += printCount;
+		assert(m_CounterNames.size() == m_Counters.size());
 
-    free(info);
+		std::string labels;
 
-    std::string graphDraw = g_Config.GetValue(m_SectionName, "GraphDraw", "LINE");
-	std::string counterType = g_Config.GetValue(m_SectionName, "CounterType", "GAUGE");
+		// We handle multiple counters
+		for (size_t i = 0; i < m_CounterNames.size(); i++) {
+			PDH_STATUS status;
+			DWORD infoSize = 0;
+			status = PdhGetCounterInfo(m_Counters[i], TRUE, &infoSize, NULL);
+			if (status != PDH_MORE_DATA)
+				return -1;
 
-	std::string minValue;
-	std::string minValueNumbered;
+			PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
+			status = PdhGetCounterInfo(m_Counters[i], TRUE, &infoSize, info);
+			if (status != ERROR_SUCCESS) {
+				free(info);
+				return -1;
+			}
 
-	if(counterType == "DERIVE") {
-		minValue = "%s.min 0\n";
-		minValueNumbered = "%s_%i_.min 0\n";
-	} else {
-		minValue = minValueNumbered = "";
+			std::string explainText = W2AConvert(info->szExplainText);
+			if (i == 0) {
+
+				labels = "%s.label %s\n"
+					"%s.draw %s\n"
+					"%s.type %s\n"
+					"%s.info %s\n";
+				labels += minValue;
+
+				// First counter gets a normal name
+				printCount = _snprintf(buffer, len,
+					labels.c_str(),
+					m_Name.c_str(), m_CounterNames[i].c_str(),
+					m_Name.c_str(), graphDraw.c_str(),
+					m_Name.c_str(), counterType.c_str(),
+					m_Name.c_str(), explainText,
+					m_Name.c_str());
+			}
+			else {
+				// Rest of the counters are numbered
+
+				labels = "%s_%i_.label %s\n"
+					"%s_%i_.draw %s\n"
+					"%s_%i_.type %s\n"
+					"%s_%i_.info %s\n";
+				labels += minValueNumbered;
+
+				printCount = _snprintf(buffer, len,
+					labels.c_str(),
+					m_Name.c_str(), i, m_CounterNames[i].c_str(),
+					m_Name.c_str(), i, graphDraw.c_str(),
+					m_Name.c_str(), i, counterType.c_str(),
+					m_Name.c_str(), i, explainText,
+					m_Name.c_str(), i);
+			}
+			free(info);
+			len -= printCount;
+			buffer += printCount;
+		}
 	}
-
-    assert(m_CounterNames.size() == m_Counters.size());
-
-	std::string labels;
-
-      // We handle multiple counters
-      for (size_t i = 0; i < m_CounterNames.size(); i++) {
-        if (i == 0) {
-
-		  labels = "%s.label %s\n"
-				   "%s.draw %s\n"
-				   "%s.type %s\n";
-		  labels += minValue;
-
-          // First counter gets a normal name
-          printCount = _snprintf(buffer, len, 
-			labels.c_str(),
-            m_Name.c_str(), m_CounterNames[i].c_str(),
-            m_Name.c_str(), graphDraw.c_str(),
-			m_Name.c_str(), counterType.c_str(),
-			m_Name.c_str());
-        } else {
-          // Rest of the counters are numbered
-
-		  labels = "%s_%i_.label %s\n"
- 				   "%s_%i_.draw %s\n"
-				   "%s_%i_.type %s\n";
-		  labels += minValueNumbered;
-
-          printCount = _snprintf(buffer, len, 
-            labels.c_str(),
-            m_Name.c_str(), i, m_CounterNames[i].c_str(),
-            m_Name.c_str(), i, graphDraw.c_str(),
-			m_Name.c_str(), i, counterType.c_str(),
-			m_Name.c_str(), i);
-        }
-        len -= printCount;
-        buffer += printCount;
-      }
-    }
 
   strncat(buffer, ".\n", len);
   return 0;

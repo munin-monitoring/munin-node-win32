@@ -16,6 +16,7 @@ public:
 private:
   bool OpenCounter();
   const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR *englishName);
+  const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterEnglishName(const TCHAR *englishName);
 
   bool m_Loaded;
   std::string m_SectionName;
@@ -24,4 +25,5 @@ private:
   HQUERY m_PerfQuery;
   std::vector<std::string> m_CounterNames;
   std::vector<HCOUNTER> m_Counters;
+  std::map<DWORD, TString> englishCounterNames;
 };
