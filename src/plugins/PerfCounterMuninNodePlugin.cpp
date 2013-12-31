@@ -293,6 +293,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len) 
 {  
 	if (!m_Counters.empty()) {
+
 		PDH_STATUS status;
 		DWORD infoSize = 0;
 		status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, NULL);
@@ -308,8 +309,9 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 		std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
 		std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
 		std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
-		std::string explainText = info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[0].c_str();
-		std::string counterName = W2AConvert(info->szCounterName);
+		std::string explainText = g_Config.GetValue(m_SectionName, "GraphInfo",
+			info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[0].c_str());
+		std::string counterName = g_Config.GetValue(m_SectionName, "GraphVLabel", W2AConvert(info->szCounterName));
 		printCount = _snprintf(buffer, len, "graph_title %s\n"
 			"graph_category %s\n"
 			"graph_args %s\n"
