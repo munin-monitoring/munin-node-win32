@@ -197,32 +197,32 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 			  para = idx;
 		  }
 	  }
-	  DWORD instPos = para ? para : backslashes[1];
-	  TCHAR *oName = new TCHAR[instPos - backslashes[0]];
-	  TCHAR *cName = new TCHAR[idx - backslashes[1] + 1];
-	  TCHAR *iName = new TCHAR[backslashes[1] - para + 1];
-	  // copy the object name
-	  wcsncpy(oName, pathList + backslashes[0] + 1, instPos - backslashes[0] - 1);
-	  oName[instPos - backslashes[0] - 1] = 0;
-	  // copy the counter name (end of complete path, so \0 already exists)
-	  wcsncpy(cName, pathList + backslashes[1] + 1, idx - backslashes[1]);
-	  // if there's an instance name, copy it, too.
-	  if (para) {
-		  wcsncpy(iName, pathList + para, backslashes[1] - para);
-	  }
-	  iName[backslashes[1] - para] = 0;
 	  TCHAR *matchPath;
 	  // use regex matching either on the original path or the
 	  // back-translated constructed path
 	  if (useEnglishNames) {
+		  DWORD instPos = para ? para : backslashes[1];
+		  TCHAR *oName = new TCHAR[instPos - backslashes[0]];
+		  TCHAR *cName = new TCHAR[idx - backslashes[1] + 1];
+		  TCHAR *iName = new TCHAR[backslashes[1] - para + 1];
+		  // copy the object name
+		  wcsncpy(oName, pathList + backslashes[0] + 1, instPos - backslashes[0] - 1);
+		  oName[instPos - backslashes[0] - 1] = 0;
+		  // copy the counter name (end of complete path, so \0 already exists)
+		  wcsncpy(cName, pathList + backslashes[1] + 1, idx - backslashes[1]);
+		  // if there's an instance name, copy it, too.
+		  if (para) {
+			  wcsncpy(iName, pathList + para, backslashes[1] - para);
+		  }
+		  iName[backslashes[1] - para] = 0;
 		  matchPath = new TCHAR[MAX_PATH];
 		  _snwprintf(matchPath, MAX_PATH, _T("\\%s%s\\%s"), GetPdhCounterEnglishName(oName), iName, GetPdhCounterEnglishName(cName));
+		  delete oName;
+		  delete cName;
+		  delete iName;
 	  } else {
 		  matchPath = pathList;
 	  }
-	  delete oName;
-	  delete cName;
-	  delete iName;
 	  // handle includes & excludes
 	  if (!includeRegEx.MatchExact(matchPath).IsMatched()
 		  || excludeRegEx.MatchExact(matchPath).IsMatched()) {
