@@ -157,7 +157,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   DWORD pathListBufsz = 0;
   status = PdhExpandWildCardPath(NULL, counterPath, NULL, &pathListBufsz, 0);
   if (status != PDH_MORE_DATA) {
-	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath %s error=%x", m_Name.c_str(), counterPath, status);
+	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath %ls error=%x", m_Name.c_str(), counterPath, status);
 	  return false;
   }
   TCHAR *pathList = new TCHAR[pathListBufsz+2];
@@ -193,7 +193,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 			  } else {
 				  backslashes[0] = idx;
 			  }
-		  } else if (pathList[idx] == '(' && (!para) && backslashes[0]) {
+		  } else if (pathList[idx] == '(' && (!para) && backslashes[0] && (!backslashes[1])) {
 			  para = idx;
 		  }
 	  }
