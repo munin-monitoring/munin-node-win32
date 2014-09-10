@@ -20,12 +20,6 @@ typedef struct
 
 typedef struct
 {
-	LARGE_INTEGER liIdleTime;
-	DWORD dwSpare[76];
-} SYSTEM_PERFORMANCE_INFORMATION;
-
-typedef struct
-{
 	LARGE_INTEGER liKeBootTime;
 	LARGE_INTEGER liKeSystemTime;
 	LARGE_INTEGER liExpTimeZoneBias;
@@ -51,6 +45,7 @@ typedef struct
 // // written to the buffer
 // );
 typedef LONG (WINAPI *PROCNTQSI)(UINT,PVOID,ULONG,PULONG);
+typedef BOOL (WINAPI *pfnGetSystemTimes)(LPFILETIME lpIdleTime, LPFILETIME lpKernelTime, LPFILETIME lpUserTime );
 
 class CpuMuninNodePlugin : public MuninNodePlugin
 {
@@ -65,10 +60,12 @@ public:
 
 private:
   void CalculateCpuLoad();
+  unsigned long long FileTimeToInt64(const FILETIME & ft);
+
 
   PROCNTQSI NtQuerySystemInformation;
-  double dbIdleTime;
-  double dbSystemTime;  
-  LARGE_INTEGER liOldIdleTime;
-  LARGE_INTEGER liOldSystemTime;
+  pfnGetSystemTimes GetSystemTimes;
+  double dbCpuTimePercent;
+  unsigned long long liOldIdleTime;
+  unsigned long long liOldSystemTime;
 };
