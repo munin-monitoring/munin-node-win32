@@ -20,6 +20,6 @@ private:
 
   bool m_Loaded;
   HQUERY m_PerfQuery;
-  std::vector<std::string> m_DiskTimeNames;
+  std::vector<TString> m_DiskTimeNames;
   std::vector<HCOUNTER> m_DiskTimeCounters;
 };
