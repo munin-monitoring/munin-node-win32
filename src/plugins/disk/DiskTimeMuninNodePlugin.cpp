@@ -77,7 +77,7 @@ bool DiskTimeMuninNodePlugin::OpenCounter()
   int pos = 0;
   TCHAR *instanceName = instanceList;
   while (instanceName[0] != NULL && instanceName[1] != NULL) {
-    std::string diskName = T2AConvert(instanceName);
+    TString diskName = W2TConvert(instanceName);
     m_DiskTimeNames.push_back(diskName);
     while (instanceName[0] != NULL)
       instanceName++;
@@ -136,7 +136,8 @@ int DiskTimeMuninNodePlugin::GetConfig(char *buffer, int len)
 
     assert(m_DiskTimeNames.size() == m_DiskTimeCounters.size());
     for (size_t i = 0; i < m_DiskTimeNames.size(); i++) {
-      printCount = _snprintf(buffer, len, "disktime_%i_.label %s\n", i, m_DiskTimeNames[i].c_str());
+      std::string diskName = T2AConvert(m_DiskTimeNames[i]);
+      printCount = _snprintf(buffer, len, "disktime_%i_.label %s\n", i, diskName.c_str());
       len -= printCount;
       buffer += printCount;
     }
