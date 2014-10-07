@@ -55,25 +55,25 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
     if (status != NO_ERROR) {
       printf("Querying SystemBasicInformation failed: 0x%x\n", status);
       return;
-	  }
+    }
 
     // get new system time
     status = NtQuerySystemInformation(SystemTimeInformation, &SysTimeInfo, sizeof(SysTimeInfo), NULL);
     if (status!=NO_ERROR) {
       printf("Querying SystemTimeInformation failed: 0x%x\n", status);
       return;
-	  }
+    }
 
     // get new CPU times
     // http://www.codeproject.com/Articles/9113/Get-CPU-Usage-with-GetSystemTimes
-	  FILETIME ftIdleTime;
-	  FILETIME ftKernelTime;
-  	FILETIME ftUserTime;
-  	BOOL result = GetSystemTimes((LPFILETIME)&ftIdleTime, (LPFILETIME)&ftKernelTime, (LPFILETIME)&ftUserTime);
-	  if (result == FALSE) {
+    FILETIME ftIdleTime;
+    FILETIME ftKernelTime;
+    FILETIME ftUserTime;
+    BOOL result = GetSystemTimes((LPFILETIME)&ftIdleTime, (LPFILETIME)&ftKernelTime, (LPFILETIME)&ftUserTime);
+    if (result == FALSE) {
       printf("GetSystemTimes failed\n");
-	  	return;
-  	}
+      return;
+    }
     unsigned long long systemTime = FileTimeToInt64(ftKernelTime) + FileTimeToInt64(ftUserTime);
     unsigned long long idleTime = FileTimeToInt64(ftIdleTime);
 
@@ -92,7 +92,7 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
     liOldSystemTime = systemTime;
   }
   else {
-	  printf("NtQuerySystemInformation or GetSystemTimes functions not available\n");
+    printf("NtQuerySystemInformation or GetSystemTimes functions not available\n");
   }
 }
 
