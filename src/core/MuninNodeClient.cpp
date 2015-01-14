@@ -95,10 +95,19 @@ void *MuninNodeClient::Entry()
   char hostname[64] = {0};
   int len = 0;
   
-  ret = gethostname(hostname, 64);
-  if (ret) {
-    _Module.LogEvent("Failed to get hostname!");
+  std::string configHostname = g_Config.GetValue("MuninNode", "Hostname");
+  if (configHostname.length() > 0)
+  {
+    strncpy(hostname, configHostname.c_str(),std::min<int>(63,configHostname.length()));
   }
+  else
+  {
+    ret = gethostname(hostname, 64);
+      if (ret) {
+        _Module.LogEvent("Failed to get hostname!");
+    }
+  }
+
   ret = _snprintf(buffer, BUFFER_SIZE, "# munin node at %s\n", hostname);
 
   // we simply send this string to the client
