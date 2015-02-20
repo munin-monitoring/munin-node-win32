@@ -21,6 +21,7 @@
 #include "Service.h"
 #include "../extra/verinfo.h"
 #include <vector>
+#include <algorithm>
 
 MuninNodeClient::MuninNodeClient(JCSocket *client, JCThread *server, MuninPluginManager *pluginManager) 
   : m_Client(client)
