@@ -63,6 +63,6 @@ int MemoryMuninNodePlugin::GetValues(char *buffer, int len)
     "swap.value %llu\n"
     "free.value %llu\n"
     //"committed.value %u\n"
-    ".\n", mem.ullTotalPhys-mem.ullAvailPhys, mem.ullTotalPageFile-mem.ullAvailPageFile, mem.ullAvailPhys);
+    ".\n", mem.ullTotalPhys-mem.ullAvailPhys, (mem.ullTotalPageFile-mem.ullAvailPageFile-mem.ullTotalPhys+mem.ullAvailPhys), mem.ullAvailPhys);
   return 0;
 }
