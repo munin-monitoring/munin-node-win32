@@ -83,16 +83,19 @@ const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR 
 	if (englishCounterNames.empty()) {
 		return englishName;
 	}
-	DWORD fIndex = -1;
+	DWORD fIndex = 0;
 	// try to find the name in the map of pdh objects&counters
 	for (std::map<DWORD, TString>::iterator it = englishCounterNames.begin(); it != englishCounterNames.end(); ++it) {
 		if (!it->second.compare(englishName)) {
+			if (fIndex) {
+				_Module.LogEvent("PerfCounter plugin: %s: duplicate %ls, idx %i/%i", m_SectionName.c_str(), englishName, fIndex, it->first);
+				break;
+			}
 			fIndex = it->first;
-			break;
 		}
 	}
 	// not found
-	if (fIndex < 0)
+	if (fIndex <= 0)
 		return englishName;
 
 	DWORD status;
@@ -100,8 +103,15 @@ const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR 
 	PdhLookupPerfNameByIndex(NULL, fIndex, NULL, &bufSize);
 	TCHAR *localName = new TCHAR[bufSize];
 	status = PdhLookupPerfNameByIndex(NULL, fIndex, localName, &bufSize);
+	if (status == PDH_INSUFFICIENT_BUFFER) {
+		delete localName;
+		bufSize = 1024;
+		TCHAR *localName = new TCHAR[bufSize];
+		status = PdhLookupPerfNameByIndex(NULL, fIndex, localName, &bufSize);
+	}
 	if (status != ERROR_SUCCESS) {
 		// can happen, i.e. if the name is "*"
+		delete localName;
 		_Module.LogEvent("PerfCounter plugin: %s: Could not find a local name for %ls, error=%x", m_Name.c_str(), englishName, status);
 		return englishName;
 	}
@@ -153,11 +163,11 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 
   TCHAR *counterPath = new TCHAR[MAX_PATH];
 
-  status = _snwprintf(counterPath, MAX_PATH, _T("\\%s(%s)\\%s"), objectName.c_str(), instanceName.c_str(), counterName.c_str());
+  status = _sntprintf(counterPath, MAX_PATH, _T("\\%s(%s)\\%s"), objectName.c_str(), instanceName.c_str(), counterName.c_str());
   DWORD pathListBufsz = 0;
   status = PdhExpandWildCardPath(NULL, counterPath, NULL, &pathListBufsz, 0);
-  if (status != PDH_MORE_DATA) {
-	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath %ls error=%x", m_Name.c_str(), counterPath, status);
+  if (status != PDH_MORE_DATA && status != PDH_INSUFFICIENT_BUFFER) {
+	  _Module.LogError("PerfCounter plugin: %s: PdhExpandWildCardPath error=%x", m_Name.c_str(), status);
 	  return false;
   }
   TCHAR *pathList = new TCHAR[pathListBufsz+2];
@@ -210,6 +220,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 		  oName[instPos - backslashes[0] - 1] = 0;
 		  // copy the counter name (end of complete path, so \0 already exists)
 		  wcsncpy(cName, pathList + backslashes[1] + 1, idx - backslashes[1]);
+		  cName[idx - backslashes[1]] = 0;
 		  // if there's an instance name, copy it, too.
 		  if (para) {
 			  wcsncpy(iName, pathList + para, backslashes[1] - para);
@@ -244,9 +255,10 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 	  // replace the backslash before the counter name with a space
 	  pathList[backslashes[1]] = ' ';
 
-	  _Module.LogEvent("PerfCounter plugin: %s: added counter %ls", m_Name.c_str(), pathList);
+	  std::string cn = W2IConvert(pathList + (para ? para : (backslashes[1] + 1)));
+	  _Module.LogEvent("PerfCounter plugin: %s: added counter %s", m_Name.c_str(), cn.c_str());
 	  m_Counters.push_back(counterHandle);
-	  m_CounterNames.push_back(T2AConvert(pathList + backslashes[0] + 1));
+	  m_CounterNames.push_back(cn);
   }
   
   // Collect init data
@@ -297,7 +309,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 		PDH_STATUS status;
 		DWORD infoSize = 0;
 		status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, NULL);
-		if (status != PDH_MORE_DATA)
+		if (status != PDH_MORE_DATA && status != PDH_INSUFFICIENT_BUFFER)
 			return -1;
 
 		PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
@@ -310,8 +322,8 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 		std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
 		std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
 		std::string explainText = g_Config.GetValue(m_SectionName, "GraphInfo",
-			info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[0].c_str());
-		std::string counterName = g_Config.GetValue(m_SectionName, "GraphVLabel", W2AConvert(info->szCounterName));
+			info->szExplainText ? W2IConvert(info->szExplainText) : m_CounterNames[0].c_str());
+		std::string counterName = g_Config.GetValue(m_SectionName, "GraphVLabel", W2IConvert(info->szCounterName));
 		printCount = _snprintf(buffer, len, "graph_title %s\n"
 			"graph_category %s\n"
 			"graph_args %s\n"
@@ -364,7 +376,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 			PDH_STATUS status;
 			DWORD infoSize = 0;
 			status = PdhGetCounterInfo(m_Counters[i], TRUE, &infoSize, NULL);
-			if (status != PDH_MORE_DATA)
+			if (status != PDH_MORE_DATA && status != PDH_INSUFFICIENT_BUFFER)
 				return -1;
 
 			PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
@@ -374,7 +386,17 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 				return -1;
 			}
 
-			std::string explainText = info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[i].c_str();
+			_Module.LogEvent("PerfCounter plugin: %s: counter id %i", m_Name.c_str(), info->dwType);
+
+			DWORD npl = 260;
+			TCHAR *np = new TCHAR[npl];
+			PdhMakeCounterPath(&(info->CounterPath), np, &npl, 0);
+			_Module.LogEvent("PerfCounter plugin: %s: counter path %ls, %ls", m_Name.c_str(), np, info->CounterPath.szObjectName);
+			npl = 260;
+			PdhMakeCounterPath(&(info->CounterPath), np, &npl, PDH_PATH_WBEM_INPUT);
+			_Module.LogEvent("PerfCounter plugin: %s: counter path %ls, %ls", m_Name.c_str(), np, info->CounterPath.szObjectName);
+
+			std::string explainText = info->szExplainText ? W2IConvert(info->szExplainText) : m_CounterNames[i].c_str();
 			if (i == 0) {
 
 				labels = "%s.label %s\n"
@@ -389,7 +411,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 					m_Name.c_str(), m_CounterNames[i].c_str(),
 					m_Name.c_str(), graphDraw.c_str(),
 					m_Name.c_str(), counterType.c_str(),
-					m_Name.c_str(), explainText,
+					m_Name.c_str(), explainText.c_str(),
 					m_Name.c_str());
 			}
 			else {
@@ -406,7 +428,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 					m_Name.c_str(), i, m_CounterNames[i].c_str(),
 					m_Name.c_str(), i, graphDraw.c_str(),
 					m_Name.c_str(), i, counterType.c_str(),
-					m_Name.c_str(), i, explainText,
+					m_Name.c_str(), i, explainText.c_str(),
 					m_Name.c_str(), i);
 			}
 			free(info);
