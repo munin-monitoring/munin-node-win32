@@ -351,22 +351,6 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 			minValue = minValueNumbered = "";
 		}
 
-    int printCount;
-    std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
-    std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
-    std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
-    std::string explainText = info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[0].c_str();
-	std::string counterName = W2AConvert(info->szCounterName);
-    printCount = _snprintf(buffer, len, "graph_title %s\n"
-      "graph_category %s\n"
-      "graph_args %s\n"
-      "graph_info %s\n"
-      "graph_vlabel %s\n", 
-      graphTitle.c_str(), graphCategory.c_str(), 
-      graphArgs.c_str(),
-	  explainText.c_str(), counterName.c_str());
-    len -= printCount;
-    buffer += printCount;
 		assert(m_CounterNames.size() == m_Counters.size());
 
 		std::string labels;
