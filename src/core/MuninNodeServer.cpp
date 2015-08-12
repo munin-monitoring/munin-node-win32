@@ -73,6 +73,7 @@ void *MuninNodeServer::Entry()
 		  clientThread->Run();
 	  } else {
 		  _Module.LogError("Rejecting connection from %s", ipAddress);
+		  delete client;
 	  }
     } else {
       delete client;
