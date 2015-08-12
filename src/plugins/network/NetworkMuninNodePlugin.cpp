@@ -21,14 +21,6 @@
 
 NetworkMuninNodePlugin::NetworkMuninNodePlugin()
 {
-  m_LastUdpPacketInCount = 0;
-  m_LastUdpPacketOutCount = 0;
-  m_LastTcpPacketInCount = 0;
-  m_LastTcpPacketOutCount = 0;
-
-  // Get the initial packet counts
-  char buffer[65] = {0};
-  GetValues(buffer, 64);
 }
 
 NetworkMuninNodePlugin::~NetworkMuninNodePlugin()
@@ -36,7 +28,6 @@ NetworkMuninNodePlugin::~NetworkMuninNodePlugin()
 }
 
 int NetworkMuninNodePlugin::GetConfig(char *buffer, int len) {
-  int ret = 0;
   strncpy(buffer, "graph_order down up\n"
     "graph_title network traffic\n"
     "graph_args --base 1000\n"
