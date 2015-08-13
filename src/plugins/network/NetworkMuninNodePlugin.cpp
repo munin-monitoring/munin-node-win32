@@ -18,7 +18,6 @@
 
 #include "StdAfx.h"
 #include "NetworkMuninNodePlugin.h"
-#include <iphlpapi.h>
 
 NetworkMuninNodePlugin::NetworkMuninNodePlugin()
 {
@@ -28,7 +27,8 @@ NetworkMuninNodePlugin::~NetworkMuninNodePlugin()
 {
 }
 
-static int doiftable(int mode, string &myout) {
+// mode is 0 for config, 1 to fetch values.
+static int doiftable(int mode, std::string &myout) {
   DWORD iftsize = sizeof(MIB_IFTABLE) * 1;
   MIB_IFTABLE * mibiftable = (MIB_IFTABLE *)malloc(iftsize);
   if (mibiftable == NULL) {
@@ -36,8 +36,7 @@ static int doiftable(int mode, string &myout) {
   }
   if (GetIfTable(mibiftable, &iftsize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
 	// this failed, but set iftsize to the required size. So lets allocate that.
-    free(mibiftable);
-    mibiftable = (MIB_IFTABLE *)malloc(iftsize);
+    mibiftable = (MIB_IFTABLE *)realloc(mibiftable, iftsize);
     if (mibiftable == NULL) {
       return 1;
     }
@@ -60,7 +59,7 @@ static int doiftable(int mode, string &myout) {
 	  continue;
     }
     char ifid[64];
-	sprintf(ifid, "%d", mibifrow->dwIndex);
+	sprintf(ifid, "%lu", mibifrow->dwIndex);
     myout += "multigraph if_eth"; myout += ifid; myout += "\n";
     if (mode == 0) {
       // print config
@@ -72,7 +71,7 @@ static int doiftable(int mode, string &myout) {
       myout += "graph_info This graph shows the traffic of the windows interface with index ";
       myout += ifid;
       myout += ". Its description is ";
-      char cleandescr[101];
+      char cleandescr[201];
       for (DWORD j = 0; j < sizeof(cleandescr); j++) {
         if ((mibifrow->bDescr[j] < 32) && (mibifrow->bDescr[j] > 126)) {
           mibifrow->bDescr[j] = '?';
@@ -83,7 +82,7 @@ static int doiftable(int mode, string &myout) {
         }
         cleandescr[j] = mibifrow->bDescr[j];
       }
-      cleandescr[100] = 0;
+      cleandescr[sizeof(cleandescr) - 1] = 0;
       myout += cleandescr;
       myout += ".\n";
       myout += "down.label received\n";
@@ -100,9 +99,9 @@ static int doiftable(int mode, string &myout) {
     } else {
       // Print values
       char valout[64];
-      sprintf(valout, "%ld", mibifrow->dwInOctets);
+      sprintf(valout, "%lu", mibifrow->dwInOctets);
       myout += "down.value "; myout += valout; myout += "\n";
-      sprintf(valout, "%ld", mibifrow->dwOutOctets);
+      sprintf(valout, "%lu", mibifrow->dwOutOctets);
       myout += "up.value "; myout += valout; myout += "\n";
     }
     myout += "\n";
@@ -111,14 +110,17 @@ static int doiftable(int mode, string &myout) {
 }
 
 int NetworkMuninNodePlugin::GetConfig(char *buffer, int len) {
-  string myout("");
+  std::string myout("");
   myout += "multigraph network\n";
   myout += "graph_order down up\n";
   myout += "graph_title network traffic\n";
   myout += "graph_args --base 1000\n";
   myout += "graph_vlabel packets in (-) / out (+) per ${graph_period}\n";
   myout += "graph_category network\n";
-  myout += "graph_info This graph shows the traffic of the network interfaces. Please note that the traffic is shown in packets per second, not bytes.\n";
+  myout += "graph_info This graph shows the traffic of the network"\
+           " interfaces. Please note that the traffic is shown in packets"\
+           " per second, not bytes. Also note that only TCP and UDP packets"\
+           " are counted, others are ignored.\n";
   myout += "down.label pps\n";
   myout += "down.type COUNTER\n";
   myout += "down.graph no\n";
@@ -139,13 +141,13 @@ int NetworkMuninNodePlugin::GetValues(char *buffer, int len) {
   MIB_TCPSTATS tcpStats;
   MIB_UDPSTATS udpStats;
 
-  string myout("");
+  std::string myout("");
   myout += "multigraph network\n";
   GetTcpStatistics(&tcpStats);
   GetUdpStatistics(&udpStats);
   char packetcntrstr[200];
   sprintf(packetcntrstr,
-    "down.value %i\nup.value %i\n\n", 
+    "down.value %lu\nup.value %lu\n\n", 
     tcpStats.dwInSegs + udpStats.dwInDatagrams,
     tcpStats.dwOutSegs + udpStats.dwOutDatagrams);
   myout += packetcntrstr;
