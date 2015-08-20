@@ -58,6 +58,9 @@ static int doiftable(int mode, std::string &myout) {
     if (mibifrow->dwSpeed == 0x40000000) { // nonsense ifSpeed
       continue;
     }
+    if (mibifrow->dwPhysAddrLen < 6) { // nonsense PhysAddr
+      continue;
+    }
     char ifid[64];
     sprintf(ifid, "%lu", mibifrow->dwIndex);
     myout += "multigraph if_eth"; myout += ifid; myout += "\n";
