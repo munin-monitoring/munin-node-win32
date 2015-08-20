@@ -7,7 +7,7 @@
 !include "FileFunc.nsh"
 
 ; The name of the installer
-!define VERSION 1.6.1.0
+!define VERSION 1.6.1.1
 Name "Munin Node for Windows ${VERSION} (Beta)"
 
 ; The file to write
@@ -54,7 +54,9 @@ Section "Munin Node for Windows (required)"
   
   ; Put file there
   File "..\bin\Release\munin-node.exe"
+  SetOverwrite off
   File "..\munin-node.ini"
+  SetOverwrite on
   
   ; Write the installation path into the registry
   WriteRegStr HKLM "SOFTWARE\Munin Node for Windows" "Install_Dir" "$INSTDIR"
