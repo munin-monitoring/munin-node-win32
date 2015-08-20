@@ -106,6 +106,7 @@ static int doiftable(int mode, std::string &myout) {
     }
     myout += "\n";
   }
+  free(mibiftable);
   return 0;
 }
 
