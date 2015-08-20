@@ -35,31 +35,31 @@ static int doiftable(int mode, std::string &myout) {
     return 1;
   }
   if (GetIfTable(mibiftable, &iftsize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
-	// this failed, but set iftsize to the required size. So lets allocate that.
+    // this failed, but set iftsize to the required size. So lets allocate that.
     mibiftable = (MIB_IFTABLE *)realloc(mibiftable, iftsize);
     if (mibiftable == NULL) {
       return 1;
     }
   }
   if (GetIfTable(mibiftable, &iftsize, FALSE) != NO_ERROR) {
-	return 1;
+    return 1;
   }
   for (DWORD i = 0; i < mibiftable->dwNumEntries; i++) {
     MIB_IFROW * mibifrow = (MIB_IFROW *)&mibiftable->table[i];
     if (mibifrow->dwType != IF_TYPE_ETHERNET_CSMACD) { // not Ethernet
       continue;
     }
-	if (mibifrow->dwOperStatus != IF_OPER_STATUS_OPERATIONAL) { //not operational
-      continue;
-	}
-	if (mibifrow->dwAdminStatus != 1) { // administratively disabled
+    if (mibifrow->dwOperStatus != IF_OPER_STATUS_OPERATIONAL) { //not operational
       continue;
     }
-	if (mibifrow->dwSpeed == 0x40000000) { // nonsense ifSpeed
-	  continue;
+    if (mibifrow->dwAdminStatus != 1) { // administratively disabled
+      continue;
+    }
+    if (mibifrow->dwSpeed == 0x40000000) { // nonsense ifSpeed
+      continue;
     }
     char ifid[64];
-	sprintf(ifid, "%lu", mibifrow->dwIndex);
+    sprintf(ifid, "%lu", mibifrow->dwIndex);
     myout += "multigraph if_eth"; myout += ifid; myout += "\n";
     if (mode == 0) {
       // print config
