@@ -14,10 +14,19 @@ public:
 
   static const char *SectionPrefix;
 private:
+  bool VerifyOS();
+  bool CreateQuery();
+  void GetNames(TString& objectName, TString& counterName);
+  bool GetCounters();
+  bool EnumCounters(TString& objectName);
+  bool InitCounters(TString& objectName, TString& counterName);
+  bool CollectInitData();
+  bool SetupFormat();
   bool OpenCounter();
   const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR *englishName);
 
   bool m_Loaded;
+  bool m_HasInstances;
   std::string m_SectionName;
   DWORD m_dwCounterFormat;
   double m_CounterMultiply;
