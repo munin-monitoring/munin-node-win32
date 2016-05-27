@@ -48,14 +48,6 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
   if (NtQuerySystemInformation != NULL && GetSystemTimes != NULL) {
     LONG status;
     SYSTEM_TIME_INFORMATION SysTimeInfo;
-    SYSTEM_BASIC_INFORMATION SysBaseInfo;
-
-    // get number of processors in the system
-    status = NtQuerySystemInformation(SystemBasicInformation, &SysBaseInfo, sizeof(SysBaseInfo), NULL);
-    if (status != NO_ERROR) {
-      printf("Querying SystemBasicInformation failed: 0x%x\n", status);
-      return;
-    }
 
     // get new system time
     status = NtQuerySystemInformation(SystemTimeInformation, &SysTimeInfo, sizeof(SysTimeInfo), NULL);

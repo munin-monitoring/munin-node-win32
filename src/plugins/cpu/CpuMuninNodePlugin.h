@@ -3,23 +3,6 @@
 
 typedef struct
 {
-	DWORD dwUnknown1;
-	ULONG uKeMaximumIncrement;
-	ULONG uPageSize;
-	ULONG uMmNumberOfPhysicalPages;
-	ULONG uMmLowestPhysicalPage;
-	ULONG uMmHighestPhysicalPage;
-	ULONG uAllocationGranularity;
-	PVOID pLowestUserAddress;
-	PVOID pMmHighestUserAddress;
-	ULONG uKeActiveProcessors;
-	BYTE bKeNumberProcessors;
-	BYTE bUnknown2;
-	WORD wUnknown3;
-} SYSTEM_BASIC_INFORMATION;
-
-typedef struct
-{
 	LARGE_INTEGER liKeBootTime;
 	LARGE_INTEGER liKeSystemTime;
 	LARGE_INTEGER liExpTimeZoneBias;
