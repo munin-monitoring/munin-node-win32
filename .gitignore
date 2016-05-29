@@ -1,4 +1,6 @@
 *.bak
 *.ncb
 *.suo
-munin-node.vcproj.*
+munin-node.vcxproj.*
+munin-node.VC.*
+ipch/
