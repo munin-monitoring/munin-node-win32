@@ -3,6 +3,8 @@
 ; NSIS Installer build script
 ;--------------------------------
 
+!include "MUI2.nsh"
+
 !addplugindir "nsisFirewall"
 !include "FileFunc.nsh"
 
@@ -44,13 +46,23 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
   
 ;--------------------------------
 
-; Pages
-Page components
-Page directory
-Page instfiles
+!define MUI_ABORTWARNING
 
-UninstPage uninstConfirm
-UninstPage instfiles
+; Pages
+!define MUI_WELCOMEPAGE_TITLE_3LINES
+!insertmacro MUI_PAGE_WELCOME
+!define MUI_COMPONENTSPAGE_NODESC
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!define MUI_FINISHPAGE_TITLE_3LINES
+!insertmacro MUI_PAGE_FINISH
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
+!insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
 
