@@ -143,6 +143,6 @@ Then `Build` / `Rebuild solution`
 
 That creates the `bin\Release\munin-node.exe` file
 
-Get the `NSIS (Nullsoft Scriptable Install System)` (2.46)
+Get the `NSIS (Nullsoft Scriptable Install System)` from https://sourceforge.net/projects/nsis/ (Testet with version 3.01)
 
 Compile `installer\munin-node-win32.nsi` with NSIS
