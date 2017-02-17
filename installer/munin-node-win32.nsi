@@ -108,8 +108,6 @@ SectionEnd
 
 Section "Uninstall"
 	; Remove Munin Node for Windows from the authorized list
-	;nsisFirewall::RemoveAuthorizedApplication "$INSTDIR\munin-node.exe"
-	;SimpleFC::RemovePort 4949 6
 	SimpleFC::AdvRemoveRule "Munin Node for Windows"
 	Pop $0
 	IntCmp $0 0 +3
