@@ -63,7 +63,7 @@ int NetworkMuninNodePlugin::GetValues(char *buffer, int len) {
 
   ret = GetTcpStatistics(&tcpStats);
   ret = GetUdpStatistics(&udpStats);
-  _snprintf(buffer, len, "down.value %i\nup.value %i\n.\n", 
+  _snprintf(buffer, len, "down.value %lu\nup.value %lu\n.\n", 
     tcpStats.dwInSegs + udpStats.dwInDatagrams,
     tcpStats.dwOutSegs + udpStats.dwOutDatagrams);
 
