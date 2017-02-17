@@ -7,7 +7,7 @@
 !include "FileFunc.nsh"
 
 ; The name of the installer
-!define VERSION 1.6.1.0
+!define VERSION 1.6.2.0
 Name "Munin Node for Windows ${VERSION} (Beta)"
 
 ; The file to write
@@ -22,6 +22,9 @@ InstallDirRegKey HKLM "Software\Munin Node for Windows" "Install_Dir"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
+
+; Loading language file
+LoadLanguageFile "${NSISDIR}\Contrib\Language files\English.nlf"
 
 VIProductVersion "${VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Munin Node for Windows"
