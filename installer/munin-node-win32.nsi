@@ -5,11 +5,11 @@
 
 !include "MUI2.nsh"
 
-!addplugindir "nsisFirewall"
+!addplugindir "SimpleFC"
 !include "FileFunc.nsh"
 
 ; The name of the installer
-!define VERSION 1.6.1.0
+!define VERSION 1.6.2.0
 Name "Munin Node for Windows ${VERSION} (Beta)"
 
 !ifdef MUNIN_ARCH_X64
@@ -114,7 +114,7 @@ SectionEnd
 ; Add firewall rule
 Section "Add Windows Firewall Rule"
 	; Add Munin Node for Windows to the authorized list
-	nsisFirewall::AddAuthorizedApplication "$INSTDIR\munin-node.exe" "Munin Node for Windows"
+	SimpleFC::AdvAddRule "Munin Node for Windows" "Allow incoming connections on TCP/4949 to munin-node.exe for all networks"  6 1 1 2147483647 1 "$INSTDIR\munin-node.exe" "" "" "Munin" 4949 "" "" ""
 	Pop $0
 	IntCmp $0 0 +3
 		MessageBox MB_OK "A problem happened while adding Munin Node for Windows to the Firewall exception list (result=$0)"
@@ -132,7 +132,7 @@ SectionEnd
 
 Section "Uninstall"
 	; Remove Munin Node for Windows from the authorized list
-	nsisFirewall::RemoveAuthorizedApplication "$INSTDIR\munin-node.exe"
+	SimpleFC::AdvRemoveRule "Munin Node for Windows"
 	Pop $0
 	IntCmp $0 0 +3
 		MessageBox MB_OK "A problem happened while removing Munin Node for Windows from the Firewall exception list (result=$0)"
