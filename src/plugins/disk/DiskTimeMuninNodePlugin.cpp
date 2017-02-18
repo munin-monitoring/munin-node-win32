@@ -127,8 +127,8 @@ int DiskTimeMuninNodePlugin::GetConfig(char *buffer, int len)
     printCount = _snprintf(buffer, len, "graph_title Disk Time\n"
       "graph_category system\n"
       "graph_args --base 1000 -l 0\n"
-      "graph_info %s\n"
-      "graph_vlabel %s\n", info->szExplainText, info->szCounterName);
+      "graph_info %ls\n"
+      "graph_vlabel %ls\n", info->szExplainText, info->szCounterName);
     len -= printCount;
     buffer += printCount;
 
