@@ -35,15 +35,6 @@ InstallDirRegKey HKLM "Software\Munin Node for Windows" "Install_Dir"
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
-VIProductVersion "${VERSION}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Munin Node for Windows"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "NSIS Installer for Munin Node for Windows"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2006-2011 Jory 'jcsston' Stone, modified by Adam Groszer"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Munin Node for Windows"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "InternalName" "munin-node-${ARCH}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
-  
 ;--------------------------------
 
 !define MUI_ABORTWARNING
@@ -65,6 +56,16 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
 !insertmacro MUI_LANGUAGE "English"
 
 ;--------------------------------
+
+VIProductVersion "${VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "Comments" "NSIS Installer for Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (C) 2006-2011 Jory 'jcsston' Stone, modified by Adam Groszer"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Munin Node for Windows"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "InternalName" "munin-node-${ARCH}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
+  
 
 ; The stuff to install
 Section "Munin Node for Windows (required)"
