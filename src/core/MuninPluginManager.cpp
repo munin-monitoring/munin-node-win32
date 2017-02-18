@@ -32,6 +32,7 @@
 #include "../plugins/disk/SMARTMuninNodePlugin.h"
 #include "../plugins/speedfan/SpeedFanNodePlugin.h"
 #include "../plugins/PerfCounterMuninNodePlugin.h"
+#include "../plugins/PerfCounterCustomMuninNodePlugin.h"
 #include "../plugins/external/ExternalMuninNodePlugin.h"
 
 #ifdef _DEBUG
@@ -103,21 +104,42 @@ MuninPluginManager::MuninPluginManager()
     }
   }
 
-  const char *perfPrefix = PerfCounterMuninNodePlugin::SectionPrefix;
-  size_t perfPrefixLen = strlen(perfPrefix);
-  for (size_t i = 0; i < g_Config.GetNumKeys(); i++) {
-    std::string keyName = g_Config.GetKeyName(i);
-    if (keyName.compare(0, perfPrefixLen, perfPrefix) == 0) {
-      PerfCounterMuninNodePlugin *plugin = new PerfCounterMuninNodePlugin(keyName);
-      if (plugin->IsLoaded()) {
-        AddPlugin(plugin);
-      } else {
-        _Module.LogError("Failed to load PerfCounter plugin: [%s]", keyName.c_str());
-        delete plugin;
+  // Add all the regular PerfCounter Plugins
+  {
+    const char *perfPrefix = PerfCounterMuninNodePlugin::SectionPrefix;
+    size_t perfPrefixLen = strlen(perfPrefix);
+    for (size_t i = 0; i < g_Config.GetNumKeys(); i++) {
+      std::string keyName = g_Config.GetKeyName(i);
+      if (keyName.compare(0, perfPrefixLen, perfPrefix) == 0) {
+        PerfCounterMuninNodePlugin *plugin = new PerfCounterMuninNodePlugin(keyName);
+        if (plugin->IsLoaded()) {
+          AddPlugin(plugin);
+        } else {
+          _Module.LogError("Failed to load PerfCounter plugin: [%s]", keyName.c_str());
+          delete plugin;
+        }
       }
     }
   }
-  
+
+  // Add all the PerfCounterCustom Plugins
+  {
+    const char *perfPrefix = PerfCounterCustomMuninNodePlugin::SectionPrefix;
+    size_t perfPrefixLen = strlen(perfPrefix);
+    for (size_t i = 0; i < g_Config.GetNumKeys(); i++) {
+      std::string keyName = g_Config.GetKeyName(i);
+      if (keyName.compare(0, perfPrefixLen, perfPrefix) == 0) {
+        PerfCounterCustomMuninNodePlugin *plugin = new PerfCounterCustomMuninNodePlugin(keyName);
+        if (plugin->IsLoaded()) {
+          AddPlugin(plugin);
+        } else {
+          _Module.LogError("Failed to load Custom PerfCounter plugin: [%s]", keyName.c_str());
+          delete plugin;
+        }
+      }
+    }
+  }
+
 #ifdef _DEBUG
   t = new MuninPluginManagerTestThread(this);
   t->JCThread_AddRef();

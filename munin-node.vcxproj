@@ -210,6 +210,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core\Tools.cpp" />
+    <ClCompile Include="src\plugins\PerfCounterCustomMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\RegistryMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\cpu\CpuMuninNodePlugin.cpp" />
@@ -247,6 +249,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\Tools.h" />
+    <ClInclude Include="src\plugins\PerfCounterCustomMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\RegistryMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\cpu\CpuMuninNodePlugin.h" />
