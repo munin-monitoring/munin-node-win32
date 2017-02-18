@@ -131,13 +131,13 @@ See ChangeLog
 Building a release
 ------------------
 
-Using MS Visual C++ 2008 Express Edition
+Using MS Visual C++ 2015 Express Edition
 
 Bump version in `munin-node.rc` and `installer\munin-node-win32.nsi`
 
 Open `munin-node.sln`
 
-Select `Release` and `win32` build options
+Select `Release` and `win32` (or x64) build options
 
 Then `Build` / `Rebuild solution`
 
@@ -145,4 +145,4 @@ That creates the `bin\Release\munin-node.exe` file
 
 Get the `NSIS (Nullsoft Scriptable Install System)` from https://sourceforge.net/projects/nsis/ (Testet with version 3.01)
 
-Compile `installer\munin-node-win32.nsi` with NSIS
+Compile `installer\munin-node-win32.nsi` (or -x64) with NSIS
