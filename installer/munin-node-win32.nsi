@@ -10,7 +10,7 @@
 !include "FileFunc.nsh"
 
 ; The name of the installer
-!define VERSION 1.7.4.0
+!define VERSION 1.7.4.1
 Name "Munin Node for Windows ${VERSION} (Beta)"
 
 !ifdef MUNIN_ARCH_X64
