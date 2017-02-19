@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
       }
       else if (!_stricmp(pToken, "help") || !_stricmp(pToken, "h") || !_stricmp(pToken, "?"))
       {
-        printf("%s\n", _Module.GetServiceDisplayName());
+        printf("%ls\n", _Module.GetServiceDisplayName());
         printf("Usage:\n");
         printf("  -install    Install the 'Munin Node' service.\n");
         printf("  -uninstall  Removes the 'Munin Node' service.\n");

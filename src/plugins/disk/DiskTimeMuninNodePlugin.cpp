@@ -127,8 +127,8 @@ int DiskTimeMuninNodePlugin::GetConfig(char *buffer, int len)
     printCount = _snprintf(buffer, len, "graph_title Disk Time\n"
       "graph_category system\n"
       "graph_args --base 1000 -l 0\n"
-      "graph_info %s\n"
-      "graph_vlabel %s\n", info->szExplainText, info->szCounterName);
+      "graph_info %ls\n"
+      "graph_vlabel %ls\n", info->szExplainText, info->szCounterName);
     len -= printCount;
     buffer += printCount;
 
@@ -137,7 +137,7 @@ int DiskTimeMuninNodePlugin::GetConfig(char *buffer, int len)
     assert(m_DiskTimeNames.size() == m_DiskTimeCounters.size());
     for (size_t i = 0; i < m_DiskTimeNames.size(); i++) {
       std::string diskName = T2AConvert(m_DiskTimeNames[i]);
-      printCount = _snprintf(buffer, len, "disktime_%i_.label %s\n", i, diskName.c_str());
+      printCount = _snprintf(buffer, len, "disktime_%zi_.label %s\n", i, diskName.c_str());
       len -= printCount;
       buffer += printCount;
     }
@@ -162,7 +162,7 @@ int DiskTimeMuninNodePlugin::GetValues(char *buffer, int len)
     status = PdhGetFormattedCounterValue(m_DiskTimeCounters[i], PDH_FMT_DOUBLE, NULL, &diskTimeValue);
     if (status != ERROR_SUCCESS)
       return -1;
-    printCount = _snprintf(buffer, len, "disktime_%i_.value %.2f\n", i, diskTimeValue.doubleValue);
+    printCount = _snprintf(buffer, len, "disktime_%zi_.value %.2f\n", i, diskTimeValue.doubleValue);
     len -= printCount;
     buffer += printCount;
   }

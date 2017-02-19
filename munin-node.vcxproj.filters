@@ -127,6 +127,8 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\plugins\PerfCounterCustomMuninNodePlugin.cpp" />
+    <ClCompile Include="src\core\Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h">
@@ -221,9 +223,11 @@
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\plugins\PerfCounterCustomMuninNodePlugin.h" />
+    <ClInclude Include="src\core\Tools.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bird.ico" />
+    <Image Include="munin.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="munin-node.rc" />

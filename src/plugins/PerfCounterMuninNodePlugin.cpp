@@ -325,12 +325,12 @@ int printvalue(char* buffer, size_t len, const char* name, size_t i, double valu
 		if(0==i)
 			return _snprintf(buffer, len, "%s.value %i\n", name, (int)value);
 		else
-			return _snprintf(buffer, len, "%s_%i_.value %i\n", name, i, (int)value);
+			return _snprintf(buffer, len, "%s_%zi_.value %i\n", name, i, (int)value);
 	else 
 		if(0==i)
 			return _snprintf(buffer, len, "%s.value %.2f\n", name, value);
 		else
-			return _snprintf(buffer, len, "%s_%i_.value %.2f\n", name, i, value);
+			return _snprintf(buffer, len, "%s_%zi_.value %.2f\n", name, i, value);
 }
 
 int PerfCounterMuninNodePlugin::GetValues(char *buffer, int len)

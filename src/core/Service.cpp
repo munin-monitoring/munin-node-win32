@@ -162,6 +162,7 @@ void CService::Run()
   else
   {
     // Let the server go for a few seconds
+    LogEvent("Test Mode, will exit in 100 seconds.");
     Sleep(100 * 1000);
   }
 
@@ -309,7 +310,9 @@ void CService::LogEvent(LPCSTR pFormat, ...)
 
   if (m_bService)
   {
-    m_EventLog.Write(EVENTLOG_INFORMATION_TYPE, A2TConvert(chMsg).c_str());
+	bool debuglog = g_Config.GetValueB("MuninNode","DebugLog", false);
+	if(debuglog)
+      m_EventLog.Write(EVENTLOG_INFORMATION_TYPE, A2TConvert(chMsg).c_str());
   }
   else
   {
