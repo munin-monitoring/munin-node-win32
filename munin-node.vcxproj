@@ -285,7 +285,7 @@
     <ClInclude Include="src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bird.ico" />
+    <Image Include="munin.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="munin-node.rc" />
