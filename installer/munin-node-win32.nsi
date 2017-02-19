@@ -109,7 +109,9 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Munin Node for Windows"
   CreateShortCut "$SMPROGRAMS\Munin Node for Windows\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\Munin Node for Windows\Run munin-node in foreground.lnk" "$INSTDIR\munin-node.exe" "-run" "$INSTDIR\munin-node.exe" 0
+  CreateShortCut "$SMPROGRAMS\Munin Node for Windows\Run munin-node.lnk" "$INSTDIR\munin-node.exe" "-run" "$INSTDIR\munin-node.exe" 0
+  CreateShortCut "$SMPROGRAMS\Munin Node for Windows\Install Service munin-node.lnk" "$INSTDIR\munin-node.exe" "-install" "$INSTDIR\munin-node.exe" 0
+  CreateShortCut "$SMPROGRAMS\Munin Node for Windows\Uninstall Service munin-node.lnk" "$INSTDIR\munin-node.exe" "-uninstall" "$INSTDIR\munin-node.exe" 0
   
 SectionEnd
 
