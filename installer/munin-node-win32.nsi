@@ -90,6 +90,7 @@ Section "Munin Node for Windows (required)"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayName" "Munin Node for Windows"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "Publisher" "Munin Project"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "UninstallString" '"$INSTDIR\uninstall.exe"'
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayIcon " '"$INSTDIR\munin-node.exe"'
