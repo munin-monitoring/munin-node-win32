@@ -39,6 +39,9 @@ RequestExecutionLevel admin
 
 !define MUI_ABORTWARNING
 
+; Icon for installer
+!define MUI_ICON "..\munin.ico"
+
 ; Pages
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
