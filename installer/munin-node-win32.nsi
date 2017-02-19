@@ -96,7 +96,7 @@ Section "Munin Node for Windows (required)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "Publisher" "Munin Project"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayVersion" "${VERSION}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayIcon " '"$INSTDIR\munin-node.exe"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "DisplayIcon" '"$INSTDIR\munin-node.exe"'
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "URLInfoAbout" "https://github.com/munin-monitoring/munin-node-win32"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Munin Node for Windows" "NoRepair" 1
