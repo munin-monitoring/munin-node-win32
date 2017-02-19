@@ -6,6 +6,7 @@
 !include "MUI2.nsh"
 
 !addplugindir "SimpleFC"
+!addplugindir "SimpleSC"
 !include "FileFunc.nsh"
 
 ; The name of the installer
@@ -35,6 +36,9 @@ InstallDirRegKey HKLM "Software\Munin Node for Windows" "Install_Dir"
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
 
+; always show details during installation
+ShowInstDetails show
+
 ;--------------------------------
 
 !define MUI_ABORTWARNING
@@ -50,6 +54,7 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TITLE_3LINES
+!define MUI_FINISHPAGE_NOAUTOCLOSE
 !insertmacro MUI_PAGE_FINISH
 
 !insertmacro MUI_UNPAGE_CONFIRM
@@ -68,7 +73,19 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "Munin Node for Windows"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "InternalName" "munin-node-${ARCH}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${VERSION}"
-  
+
+; Check if service already exists and uninstall if necessary
+Section "Uninstall existing Service"
+
+	SimpleSC::ExistsService "munin-node"
+	Pop $0
+	IntCmp $0 0 service_exists service_does_not_exist service_does_not_exist
+	    service_exists:
+		; Uninstall old service
+		ExecWait '"$INSTDIR\munin-node.exe" -uninstall'
+	service_does_not_exist:
+
+SectionEnd
 
 ; The stuff to install
 Section "Munin Node for Windows (required)"
