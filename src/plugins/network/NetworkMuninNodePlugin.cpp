@@ -100,9 +100,9 @@ static int doiftable(int mode, string &myout) {
     } else {
       // Print values
       char valout[64];
-      sprintf(valout, "%ld", mibifrow->dwInOctets);
+      sprintf(valout, "%lu", mibifrow->dwInOctets);
       myout += "down.value "; myout += valout; myout += "\n";
-      sprintf(valout, "%ld", mibifrow->dwOutOctets);
+      sprintf(valout, "%lu", mibifrow->dwOutOctets);
       myout += "up.value "; myout += valout; myout += "\n";
     }
     myout += "\n";
@@ -145,7 +145,7 @@ int NetworkMuninNodePlugin::GetValues(char *buffer, int len) {
   GetUdpStatistics(&udpStats);
   char packetcntrstr[200];
   sprintf(packetcntrstr,
-    "down.value %i\nup.value %i\n\n", 
+    "down.value %lu\nup.value %lu\n\n", 
     tcpStats.dwInSegs + udpStats.dwInDatagrams,
     tcpStats.dwOutSegs + udpStats.dwOutDatagrams);
   myout += packetcntrstr;
