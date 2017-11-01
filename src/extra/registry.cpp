@@ -64,24 +64,28 @@ string CRegistry::GetValue(const char* valName, string const defValue)
 	if (ret != ERROR_MORE_DATA)
 		return defValue;
 
-	BYTE* buffer = new BYTE[len];
-	if (buffer)
-	{
-		ret =  RegQueryValueEx(m_key, 
-			tValueName.c_str(), 
+	try {
+		BYTE* buffer = new BYTE[len];
+
+		ret = RegQueryValueEx(m_key,
+			tValueName.c_str(),
 			NULL,
-			&type, 
+			&type,
 			buffer,
 			&len);
-		if (ret == ERROR_SUCCESS)		
+		if (ret == ERROR_SUCCESS)
 		{
-			string r = T2AConvert( reinterpret_cast<TCHAR*>(buffer) );
+			string r = T2AConvert(reinterpret_cast<TCHAR*>(buffer));
 			delete[] buffer;
 			return r;
 		}
 		else
 			delete[] buffer;
 	}
+	catch (std::bad_alloc& ba) {
+
+	}
+
 	return defValue;
 }
 
@@ -124,7 +128,7 @@ double CRegistry::GetValueF(string const valName, double const defValue)
 
 	if (type == REG_SZ)
 		return atof( T2AConvert(stackValue).c_str() ); 
-	else if (type = REG_DWORD)
+	else if (type == REG_DWORD)
 		return *((DWORD*)stackValue);
 	else
 	{
@@ -237,24 +241,27 @@ vector<string> CRegistry::GetValues(const char* valName)
 	if (ret != ERROR_MORE_DATA)
 		return l;
 
-	BYTE* buffer = new BYTE[len];
-	if (buffer)
-	{
-		ret =  RegQueryValueEx(m_key, 
-			tValueName.c_str(), 
+	try {
+		BYTE* buffer = new BYTE[len];
+
+		ret = RegQueryValueEx(m_key,
+			tValueName.c_str(),
 			NULL,
-			&type, 
+			&type,
 			buffer,
 			&len);
-		if (ret == ERROR_SUCCESS)		
+		if (ret == ERROR_SUCCESS)
 		{
-			convert_multisz(reinterpret_cast<TCHAR*>(buffer), len, l);			
+			convert_multisz(reinterpret_cast<TCHAR*>(buffer), len, l);
 			delete[] buffer;
 			return l;
 		}
 		else
 			delete[] buffer;
 	}
+	catch (std::bad_alloc& ba) {
+	}
+
 	return l;
 }
 
