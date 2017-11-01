@@ -124,7 +124,7 @@ double CRegistry::GetValueF(string const valName, double const defValue)
 
 	if (type == REG_SZ)
 		return atof( T2AConvert(stackValue).c_str() ); 
-	else if (type = REG_DWORD)
+	else if (type == REG_DWORD)
 		return *((DWORD*)stackValue);
 	else
 	{
