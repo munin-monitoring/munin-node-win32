@@ -3,6 +3,7 @@
 ; NSIS Installer build script
 ;--------------------------------
 
+!define /ifndef LANG_ENGLISH 1033
 !addplugindir "nsisFirewall"
 !include "FileFunc.nsh"
 
