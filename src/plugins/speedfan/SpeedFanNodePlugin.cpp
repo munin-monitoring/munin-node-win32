@@ -62,7 +62,12 @@ int SpeedFanNodePlugin::GetConfig(char *buffer, int len)
             if (*nameStr == '.')
               *nameStr = '_';
 
-          printCount = _snprintf(buffer, len, "%s.label %s\n", name.c_str(), block->id.c_str());
+          printCount = _snprintf(buffer, len, 
+			  "%s.label %s\n"
+			  "%s.warning %.2f\n",
+			  name.c_str(), block->id.c_str(),
+			  name.c_str(), block->warning
+			);
           len -= printCount;
           buffer += printCount;
         }
@@ -98,10 +103,13 @@ int SpeedFanNodePlugin::GetValues(char *buffer, int len)
               *nameStr = '_';
 
           printCount = _snprintf(buffer, len, 
-            "%s.value %.2f\n"
-            "%s.warning %.2f\n", 
-            name.c_str(), block->current,
-            name.c_str(), block->warning);
+            "%s.value %.2f\n",
+            //warnings should not be in output
+			//"%s.warning %.2f\n", 
+            name.c_str(), block->current
+			//warnings should not be in output
+			//,name.c_str(), block->warning
+		  );
           len -= printCount;
           buffer += printCount;
         }
