@@ -55,11 +55,11 @@ const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR 
 		status = RegQueryValueEx(HKEY_PERFORMANCE_DATA, L"Counter 009", NULL, NULL, (LPBYTE)regBuffer, &regBufferSize);
 
 		if (status == ERROR_MORE_DATA) {
-			delete regBuffer;
+			delete [] regBuffer;
 			regBufferSize += 4096;
 		} else {
 			if (status != ERROR_SUCCESS) {
-				delete regBuffer;
+				delete [] regBuffer;
 				_Module.LogEvent("PerfCounter plugin: %s: RegQueryValueEx error=%x", m_Name.c_str(), status);
 				return englishName;
 			}
