@@ -90,13 +90,8 @@ const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR 
 	return localName;
 }
 
-
-bool PerfCounterMuninNodePlugin::OpenCounter()
+bool PerfCounterMuninNodePlugin::VerifyOS()
 {
-  PDH_STATUS status;  
-
-  m_Name = m_SectionName.substr(strlen(PerfCounterMuninNodePlugin::SectionPrefix));
-
   OSVERSIONINFO osvi;    
   ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -104,23 +99,56 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 	  _Module.LogError("PerfCounter plugin: %s: unknown OS or not NT based", m_Name.c_str());
 	  return false; //unknown OS or not NT based
   }
+  return true;
+}
 
-  // Create a PDH query
-  status = PdhOpenQuery(NULL, 0, &m_PerfQuery);
+bool PerfCounterMuninNodePlugin::CreateQuery()
+{
+  PDH_STATUS status = PdhOpenQuery(NULL, 0, &m_PerfQuery);
   if (status != ERROR_SUCCESS) {
 	  _Module.LogError("PerfCounter plugin: %s: PdhOpenQuery error=%x", m_Name.c_str(), status);
 	  return false;
   }
+  return true;
+}
 
-  TString objectName = A2TConvert(g_Config.GetValue(m_SectionName, "Object", "LogicalDisk"));
-  TString counterName = A2TConvert(g_Config.GetValue(m_SectionName, "Counter", "% Disk Time"));
-  
-  DWORD counterListLength = 0;  
-  DWORD instanceListLength = 0;
+void PerfCounterMuninNodePlugin::GetNames(TString& objectName, TString& counterName)
+{
+  objectName = A2TConvert(g_Config.GetValue(m_SectionName, "Object", "LogicalDisk"));
+  counterName = A2TConvert(g_Config.GetValue(m_SectionName, "Counter", "% Disk Time"));
+
   if (g_Config.GetValueB(m_SectionName, "UseEnglishObjectNames", true)) {
 	  counterName = GetPdhCounterLocalizedName(counterName.c_str());
 	  objectName = GetPdhCounterLocalizedName(objectName.c_str());
   }
+}
+
+bool PerfCounterMuninNodePlugin::GetCounters()
+{ 
+  int i = 0;
+  std::string counterInstanceName;
+  char instanceID[MAX_PATH];
+  while (true) {
+	  sprintf(instanceID, "Instance_%d", i);
+      counterInstanceName = g_Config.GetValue(m_SectionName, instanceID, "");
+	  if (counterInstanceName == "") {
+		  break;
+	  } else {
+		  m_CounterNames.push_back(counterInstanceName);
+	  }
+	  i++;
+  }
+
+  return !m_CounterNames.empty();
+}
+
+bool PerfCounterMuninNodePlugin::EnumCounters(TString& objectName)
+{
+  PDH_STATUS status;
+  DWORD counterListLength = 0;  
+  DWORD instanceListLength = 0;
+
+  // Query item count
   status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), NULL, &counterListLength, NULL, &instanceListLength, PERF_DETAIL_EXPERT, 0);
   if (status != PDH_MORE_DATA) {
 	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
@@ -134,6 +162,7 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   counterList[1] = NULL;
   instanceList[1] = NULL;
 
+  // Query items
   status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), counterList, &counterListLength, instanceList, &instanceListLength, PERF_DETAIL_EXPERT, 0);
   if (status != ERROR_SUCCESS) {
     delete [] counterList;
@@ -153,14 +182,21 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   }
   delete [] counterList;
   delete [] instanceList;
+  return true;
+}
 
+bool PerfCounterMuninNodePlugin::InitCounters(TString& objectName, TString& counterName)
+{
+  PDH_STATUS status;
   TCHAR counterPath[MAX_PATH] = {0};
   HCOUNTER counterHandle;
+
   if (!m_CounterNames.empty()) {
     if (g_Config.GetValueB(m_SectionName, "DropTotal", true)) {
-      assert(m_CounterNames.back().compare("_Total") == 0);
       // We drop the last instance name as it is _Total
-      m_CounterNames.pop_back();
+	  if (m_CounterNames.back().compare("_Total") == 0) {
+        m_CounterNames.pop_back();
+	  }
     }
 
     for (size_t i = 0; i < m_CounterNames.size(); i++) {
@@ -188,8 +224,12 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
     
     m_Counters.push_back(counterHandle);
   }
-  
-  // Collect init data
+  return true;
+}
+
+bool PerfCounterMuninNodePlugin::CollectInitData()
+{
+  PDH_STATUS status;
   status = PdhCollectQueryData(m_PerfQuery);
   if (status != ERROR_SUCCESS) {
 	  if (status == PDH_INVALID_HANDLE) {
@@ -203,7 +243,11 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
 	  _Module.LogError("PerfCounter plugin: %s: PDH collect data error", m_Name.c_str());
 	  return false;
   }
+  return true;
+}
 
+bool PerfCounterMuninNodePlugin::SetupFormat()
+{
   // Setup Counter Format
   m_dwCounterFormat = PDH_FMT_DOUBLE;
   std::string counterFormatStr = g_Config.GetValue(m_SectionName, "CounterFormat", "double");
@@ -226,7 +270,35 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   }
 
   m_CounterMultiply = g_Config.GetValueF(m_SectionName, "CounterMultiply", 1.0);
+  
+  return true;
+}
 
+bool PerfCounterMuninNodePlugin::OpenCounter()
+{
+  if (!VerifyOS()) return false;
+
+  // Counter name from INI file section name
+  m_Name = m_SectionName.substr(strlen(PerfCounterMuninNodePlugin::SectionPrefix));
+
+  // Create a PDH query
+  if (!CreateQuery()) return false;
+
+  // Get counter names
+  TString objectName, counterName;
+  GetNames(objectName, counterName);
+
+  // If counter intances are listed in config, use those,
+  // otherwise enumerate all instances
+  if (!GetCounters())
+  {
+    if (!EnumCounters(objectName)) return false;
+  }
+
+  if (!InitCounters(objectName, counterName)) return false;
+  if (!CollectInitData()) return false;
+  if (!SetupFormat()) return false;
+  
   return true;
 }
 
