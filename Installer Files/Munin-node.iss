@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Munin Node"
-#define MyAppVersion "1.6.0 (Beta)"
+#define MyAppVersion "1.7.1 (Beta)"
 #define MyAppExeName "munin-node.exe"
 
 [Setup]
@@ -16,8 +16,8 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputBaseFilename=Munin-Node-1.6.0-Beta
-OutputDir=C:\Users\loure\Desktop\Werk stuff\Installer
+OutputBaseFilename=Munin-Node-1.7.1.0-Beta
+OutputDir=InstallerBuild\
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -26,10 +26,10 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Users\loure\Desktop\Werk stuff\munin-node-win32\bin.x64\Release\munin-node.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\loure\Desktop\Werk stuff\munin-node-win32\munin-node.ini"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\loure\Desktop\Werk stuff\Installer-Bat-Files\Munin-Node\Install-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\loure\Desktop\Werk stuff\Installer-Bat-Files\Munin-Node\Uninstall-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\bin.x64\Release\munin-node.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\munin-node.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Install-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Uninstall-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Run]
