@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include "MuninPluginManager.h"
 #include "Service.h"
+#include <typeinfo>;
 
 #include "../plugins/cpu/CpuMuninNodePlugin.h"
 #include "../plugins/disk/DiskMuninNodePlugin.h"
@@ -81,7 +82,7 @@ MuninPluginManager::MuninPluginManager()
   if (g_Config.GetValueB("Plugins", "HD", true))
     AddPlugin(new HDMuninNodePlugin());
 
-  if (g_Config.GetValueB("Plugins", "SMART", false))
+  if (g_Config.GetValueB("Plugins", "SMART", true))
     AddPlugin(new SMARTMuninNodePlugin());
   
   if (g_Config.GetValueB("Plugins", "SpeedFan", false))
