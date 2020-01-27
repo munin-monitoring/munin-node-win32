@@ -1,0 +1,1 @@
+munin-node.exe --install

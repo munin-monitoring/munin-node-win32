@@ -131,18 +131,14 @@ See ChangeLog
 Building a release
 ------------------
 
-Using MS Visual C++ 2008 Express Edition
+Using Visual Studio 2019 with Build Tool v142.
 
-Bump version in `munin-node.rc` and `installer\munin-node-win32.nsi`
+Open solution file (.sln) with Visual Studio.
 
-Open `munin-node.sln`
+On the top menu, find Build, and the select 'Build Solution'.
 
-Select `Release` and `win32` build options
 
-Then `Build` / `Rebuild solution`
+Creating an Installer
+-----------------------
 
-That creates the `bin\Release\munin-node.exe` file
 
-Get the `NSIS (Nullsoft Scriptable Install System)` (2.46)
-
-Compile `installer\munin-node-win32.nsi` with NSIS
