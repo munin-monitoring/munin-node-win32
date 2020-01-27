@@ -2,6 +2,8 @@
 Munin Node for Windows
 ============================
 
+Installer can be found in '/Installer Files/InstallerBuild/'
+
 Introduction
 ------------
 Munin Node for Windows AKA munin-node-win32, is a Windows client for the Munin monitoring system.
