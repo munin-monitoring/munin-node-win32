@@ -141,4 +141,11 @@ On the top menu, find Build, and the select 'Build Solution'.
 Creating an Installer
 -----------------------
 
+Using Inno Setup
+
+Open '/Installer Files/Munin-node.iss'
+
+Compile the installer
+
+
 
