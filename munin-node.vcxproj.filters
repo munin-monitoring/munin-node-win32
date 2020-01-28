@@ -37,6 +37,9 @@
     <Filter Include="core">
       <UniqueIdentifier>{7fcc2cc0-62ba-48b1-9070-83044ea2d727}</UniqueIdentifier>
     </Filter>
+    <Filter Include="plugins\disk\SMART">
+      <UniqueIdentifier>{609973f7-7a3c-4342-9dd0-e7c8d6408565}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp">
@@ -127,6 +130,17 @@
       <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.cpp">
+      <Filter>plugins\disk\SMART</Filter>
+    </ClCompile>
+    <ClCompile Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h">
@@ -221,6 +235,17 @@
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.h">
+      <Filter>plugins\disk\SMART</Filter>
+    </ClInclude>
+    <ClInclude Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bird.ico" />

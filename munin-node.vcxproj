@@ -209,6 +209,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\RegistryMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\cpu\CpuMuninNodePlugin.cpp" />
@@ -246,6 +255,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\RegistryMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\cpu\CpuMuninNodePlugin.h" />
