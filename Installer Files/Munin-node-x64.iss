@@ -18,7 +18,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputBaseFilename=Munin-Node-1.7.3
+OutputBaseFilename=Munin-Node-1.7.3-x64
 OutputDir=InstallerBuild\
 Compression=lzma
 SolidCompression=yes
