@@ -30,50 +30,49 @@ SMARTMuninNodePlugin::~SMARTMuninNodePlugin()
 
 int SMARTMuninNodePlugin::GetConfig(char *buffer, int len) 
 {
- 
-  int ret = _snprintf(buffer, len, "graph_title HDD temperature\n"
+  /*
+  ret = _snprintf(buffer, len, "graph_title HDD temperature\n"
   "graph_args --base 1000 -l 0\n"
   "graph_vlabel temp in C\n"
   "graph_category sensors\n"
   "graph_info This graph shows the temperature in degrees Celsius of the hard drives in the machine.\n");
   buffer += ret;
   len -= ret;
-  CSmartReader2 csrtrd2;
-  csrtrd2.UpdateSMART();
-  for (int index = 0; index < csrtrd2.m_ucDrivesWithInfo; index++) {
+
+  UpdateSMART();
+  for (index = 0; index < m_Smart.m_ucDrivesWithInfo; index++) {
   ret = _snprintf(buffer, len, "_hdd_%i_.label %s\n", index, 
-  (PCHAR)csrtrd2.m_stDrivesInfo[index].m_stInfo.sModelNumber);
+  (PCHAR)m_Smart.m_stDrivesInfo[index].m_stInfo.sModelNumber);
   len -= ret;
   buffer += ret;
   }
 
   strncat(buffer, ".\n", len);
+  */
 
-
-  return ret;
+  return -1;
 }
 
 int SMARTMuninNodePlugin::GetValues(char *buffer, int len) 
 { 
-  int ret = -1;
-  CSmartReader2 csrtrd2;
-  csrtrd2.UpdateSMART();
-  for (int index = 0; index < csrtrd2.m_ucDrivesWithInfo; index++) {
-  ST_DRIVE_INFO *pDriveInfo = csrtrd2.GetDriveInfo(index);
+  /*
+  UpdateSMART();
+  for (index = 0; index < m_Smart.m_ucDrivesWithInfo; index++) {
+  ST_DRIVE_INFO *pDriveInfo = m_Smart.GetDriveInfo(index);
   if (!pDriveInfo)
   continue;
 
-  ST_SMART_INFO *pSmartInfo = csrtrd2.GetSMARTValue(pDriveInfo->m_ucDriveIndex, SMART_ATTRIB_TEMPERATURE);
+  ST_SMART_INFO *pSmartInfo = m_Smart.GetSMARTValue(pDriveInfo->m_ucDriveIndex, SMART_ATTRIB_TEMPERATURE);
   if (!pSmartInfo)
   continue;
 
-  int ret = _snprintf(buffer, len, "_hdd_%i_.value %i\n", index, pSmartInfo->m_dwAttribValue);
+  ret = _snprintf(buffer, len, "_hdd_%i_.value %i\n", index, pSmartInfo->m_dwAttribValue);
   len -= ret;
   buffer += ret;
   }
 
   strncat(buffer, ".\n", len);
- 
+  */
 
-  return ret;
+  return -1;
 }
