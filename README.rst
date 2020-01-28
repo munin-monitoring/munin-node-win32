@@ -45,6 +45,42 @@ Plugins
 
     * Reports HardDrive temperature
 
+  * Spin (spinup)
+    
+    * Reports HardDrive spin-up time
+
+  * Online (onlinehours)
+
+    * Reports the total HardDrive Online Hours
+
+  * Readerror (readerrorrate)
+
+    * Reports the HardDrive Read Error Rate
+
+  * Startstop (startstopcyclehdd)
+
+    * Reports the total HardDrive Start Stop Cycles
+
+  * Reallocsector (reallocsectorcount)
+
+    * Reports the HardDrive reallocated sector count
+
+  * Seekerror (seekerrorrate)
+
+    * Reports the HardDrive Seek-Error rate
+
+  * Spinretry (spinretrycount)
+
+    * Reports the HardDrive Spin Retry count
+
+  * Reporteduncorr (reporteduncorrectableerrors)
+
+    * Reports the HardDrive Reported Uncorrectable errors
+
+  * Poweroffretract (poweroffretract)
+
+    * Reports the amount of Unsafe Shutdowns in the HardDrive's lifetime
+
   * Memory (memory):
 
     * Reports memory usage
