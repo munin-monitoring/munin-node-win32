@@ -2,3 +2,5 @@
 *.ncb
 *.suo
 munin-node.vcproj.*
+/.vs/
+
