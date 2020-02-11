@@ -37,8 +37,10 @@ Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
 
 [Run]
 Filename: "{app}\Install-Service.bat"; Description: "Install as a Windows Service"; Flags: nowait runhidden
+Filename: "{sys}\netsh.exe"; Parameters: "firewall add allowedprogram ""{app}\munin-node.exe"" ""Munin Node for Windows"" ENABLE ALL"; StatusMsg: "Windows Firewall exception"; Flags: runhidden; MinVersion: 0,5.01.2600sp2;
 
 [UninstallRun]
 Filename: {sys}\sc.exe; Parameters: "stop munin-node" ; Flags: runhidden
 Filename: {sys}\sc.exe; Parameters: "delete munin-node" ; Flags: runhidden
+Filename: {sys}\netsh.exe; Parameters: "firewall delete allowedprogram program=""{app}\munin-node.exe"""; Flags: runhidden; MinVersion: 0,5.01.2600sp2;
 
