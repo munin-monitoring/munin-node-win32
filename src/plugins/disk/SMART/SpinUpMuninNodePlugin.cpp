@@ -1,3 +1,7 @@
+/*
+ * CREATED: Lourens Ros (C) 2020
+*/
+
 #include "StdAfx.h"
 #include "SpinUpMuninNodePlugin.h"
 
@@ -19,7 +23,7 @@ int SpinUpMuninNodePlugin::GetConfig(char* buffer, int len)
     ret = _snprintf(buffer, len, "graph_title Spin-Up Time\n"
         "graph_args --base 1000 -l 0\n"
         "graph_vlabel Time in milliseconds (ms)\n"
-        "graph_category S.M.A.R.T\n"
+        "graph_category disk\n"
         "graph_info This graph shows Spin up time of the hard drives in the machine.\n");
     buffer += ret;
     len -= ret;

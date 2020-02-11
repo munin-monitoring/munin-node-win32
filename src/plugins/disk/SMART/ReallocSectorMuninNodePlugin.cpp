@@ -1,5 +1,6 @@
 /* This file is part of munin-node-win32
  * Copyright (C) 2006-2007 Jory Stone (jcsston@jory.info)
+ * MODIFIED: Lourens Ros (C) 2020
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,7 +38,7 @@ int ReallocSectorMuninNodePlugin::GetConfig(char *buffer, int len)
   ret = _snprintf(buffer, len, "graph_title Reallocated Sector Count\n"
     "graph_args --base 1000 -l 0\n"
     "graph_vlabel Sector Count\n"
-    "graph_category S.M.A.R.T\n"
+    "graph_category disk\n"
     "graph_info This graph shows the amount of reallocated sectors per hard drive in the machine.\n");
   buffer += ret;
   len -= ret;
