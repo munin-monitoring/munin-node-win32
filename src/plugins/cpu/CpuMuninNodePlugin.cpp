@@ -19,6 +19,10 @@
 
 #include "StdAfx.h"
 #include "CpuMuninNodePlugin.h"
+#include <Windows.h>
+#include <stdio.h>
+#include <atlstr.h>
+#include <iostream>
 
 #define SystemBasicInformation 0
 #define SystemTimeInformation 3
@@ -28,7 +32,8 @@
 // Initialisation
 CpuMuninNodePlugin::CpuMuninNodePlugin()
 { 
-  dbCpuTimePercent = 0;
+  dbCpuPercent = 0;
+  dbCpuHeadroomPercent = 0;
   liOldSystemTime = 0;
   liOldIdleTime = 0;
   NtQuerySystemInformation = (PROCNTQSI)GetProcAddress(GetModuleHandle(_T("ntdll")), "NtQuerySystemInformation");
@@ -45,7 +50,44 @@ CpuMuninNodePlugin::~CpuMuninNodePlugin()
 
 void CpuMuninNodePlugin::CalculateCpuLoad()
 {
-  if (NtQuerySystemInformation != NULL && GetSystemTimes != NULL) {
+    CString  ProcessorHeadroomPercentage;
+
+    FILETIME IdleTime, KernelTime, UserTime;
+    static unsigned long long PrevTotal = 0;
+    static unsigned long long PrevIdle = 0;
+    static unsigned long long PrevUser = 0;
+    unsigned long long ThisTotal;
+    unsigned long long ThisIdle, ThisKernel, ThisUser;
+    unsigned long long TotalSinceLast, IdleSinceLast, UserSinceLast;
+
+
+    // GET THE KERNEL / USER / IDLE times.  
+    // And oh, BTW, kernel time includes idle time
+    GetSystemTimes(&IdleTime, &KernelTime, &UserTime);
+
+    ThisIdle = FileTimeToInt64(IdleTime);
+    ThisKernel = FileTimeToInt64(KernelTime);
+    ThisUser = FileTimeToInt64(UserTime);
+
+    ThisTotal = ThisKernel + ThisUser;
+    TotalSinceLast = ThisTotal - PrevTotal;
+    IdleSinceLast = ThisIdle - PrevIdle;
+    UserSinceLast = ThisUser - PrevUser;
+    double Headroom;
+    Headroom = (double)IdleSinceLast / (double)TotalSinceLast;
+    double Load;
+    Load = 1.0 - Headroom;
+    Headroom *= 100.0;  // to make it percent
+    Load *= 100.0;  // percent
+
+    PrevTotal = ThisTotal;
+    PrevIdle = ThisIdle;
+    PrevUser = ThisUser;
+
+    dbCpuPercent = Load;
+    dbCpuHeadroomPercent = Headroom;
+
+  /*if (NtQuerySystemInformation != NULL && GetSystemTimes != NULL) {
     LONG status;
     SYSTEM_TIME_INFORMATION SysTimeInfo;
     SYSTEM_BASIC_INFORMATION SysBaseInfo;
@@ -93,12 +135,11 @@ void CpuMuninNodePlugin::CalculateCpuLoad()
   }
   else {
     printf("NtQuerySystemInformation or GetSystemTimes functions not available\n");
-  }
+  }*/
 }
 
-unsigned long long CpuMuninNodePlugin::FileTimeToInt64(const FILETIME & ft) 
-{
-  return (((unsigned long long)(ft.dwHighDateTime))<<32)|((unsigned long long)ft.dwLowDateTime);
+unsigned long long CpuMuninNodePlugin::FileTimeToInt64(const FILETIME& ft) {
+    return (((unsigned long long)(ft.dwHighDateTime)) << 32) | ((unsigned long long)ft.dwLowDateTime);
 }
 
 int CpuMuninNodePlugin::GetValues(char *buffer, int len) 
@@ -106,9 +147,9 @@ int CpuMuninNodePlugin::GetValues(char *buffer, int len)
   CalculateCpuLoad();
 
   _snprintf(buffer, len, 
-    "cpu_user.value %f\n"
-  //  "cpu_system.value %f\n"
-    ".\n", this->dbCpuTimePercent);
+    "cpu_load.value %f\n"
+    "cpu_headroom.value %f\n"
+    ".\n", this->dbCpuPercent, this->dbCpuHeadroomPercent);
   return 0;
 }
 
@@ -120,13 +161,13 @@ int CpuMuninNodePlugin::GetConfig(char *buffer, int len)
     "graph_category system\n"
     "graph_info This graph shows what the machine uses its cpu for.\n"
     "graph_order cpu_user\n"
-//    "graph_order cpu_system cpu_user\n"
-    "cpu_user.label user\n"
-    "cpu_user.draw AREA\n"
-    "cpu_user.info CPU used by user-space applications.\n"
-//    "cpu_system.label system\n"
-//    "cpu_system.draw STACK\n"
-//    "cpu_system.info CPU used by kernel.\n"
+    "graph_order cpu_total cpu_system cpu_user\n"
+    "cpu_load.label CPU Load\n"
+    "cpu_load.draw LINE2\n"
+    "cpu_load.info CPU Usage.\n"
+    "cpu_headroom.label CPU Headroom\n"
+    "cpu_headroom.draw LINE2\n"
+    "cpu_headroom.info CPU Headroom.\n"
     ".\n", len);
   return 0;
 }

@@ -26,24 +26,24 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -88,6 +88,7 @@
     <OutDir>bin.x64/Release\</OutDir>
     <IntDir>bin.x64/Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -208,6 +209,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.cpp" />
+    <ClCompile Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\PerfCounterMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\RegistryMuninNodePlugin.cpp" />
     <ClCompile Include="src\plugins\cpu\CpuMuninNodePlugin.cpp" />
@@ -245,6 +255,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\plugins\disk\SMART\PowerOffRetractMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReportedUncorrMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinRetryMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SeekErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReallocSectorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\StartStopMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\ReadErrorMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\OnlineMuninNodePlugin.h" />
+    <ClInclude Include="src\plugins\disk\SMART\SpinUpMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\RegistryMuninNodePlugin.h" />
     <ClInclude Include="src\plugins\cpu\CpuMuninNodePlugin.h" />

@@ -2,8 +2,6 @@
 Munin Node for Windows
 ============================
 
-Installer can be found in '/Installer Files/InstallerBuild/'
-
 Introduction
 ------------
 Munin Node for Windows AKA munin-node-win32, is a Windows client for the Munin monitoring system.
@@ -160,30 +158,5 @@ Plugins
         graph_vlabel %
         drive_free_c.label C:
         .
-
-Version History
----------------
-See ChangeLog
-
-
-Building a release
-------------------
-
-Using Visual Studio 2019 with Build Tool v142.
-
-Open solution file (.sln) with Visual Studio.
-
-On the top menu, find Build, and the select 'Build Solution'.
-
-
-Creating an Installer
------------------------
-
-Using Inno Setup
-
-Open '/Installer Files/Munin-node.iss'
-
-Compile the installer
-
 
 

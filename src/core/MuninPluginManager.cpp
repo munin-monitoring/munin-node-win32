@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include "MuninPluginManager.h"
 #include "Service.h"
+#include <typeinfo>;
 
 #include "../plugins/cpu/CpuMuninNodePlugin.h"
 #include "../plugins/disk/DiskMuninNodePlugin.h"
@@ -29,6 +30,17 @@
 #include "../plugins/mbm/MBMMuninNodePlugin.h"
 #include "../plugins/uptime/UptimeMuninNodePlugin.h"
 #include "../plugins/disk/HDMuninNodePlugin.h"
+//CUSTOM SMART PLUGINS
+#include "../plugins/disk/SMART/SpinUpMuninNodePlugin.h"
+#include "../plugins/disk/SMART/OnlineMuninNodePlugin.h"
+#include "../plugins/disk/SMART/ReadErrorMuninNodePlugin.h"
+#include "../plugins/disk/SMART/StartStopMuninNodePlugin.h"
+#include "../plugins/disk/SMART/ReallocSectorMuninNodePlugin.h"
+#include "../plugins/disk/SMART/SeekErrorMuninNodePlugin.h"
+#include "../plugins/disk/SMART/SpinRetryMuninNodePlugin.h"
+#include "../plugins/disk/SMART/ReportedUncorrMuninNodePlugin.h"
+#include "../plugins/disk/SMART/PowerOffRetractMuninNodePlugin.h"
+//----------
 #include "../plugins/disk/SMARTMuninNodePlugin.h"
 #include "../plugins/speedfan/SpeedFanNodePlugin.h"
 #include "../plugins/PerfCounterMuninNodePlugin.h"
@@ -80,6 +92,29 @@ MuninPluginManager::MuninPluginManager()
     AddPlugin(new CpuMuninNodePlugin());
   if (g_Config.GetValueB("Plugins", "HD", true))
     AddPlugin(new HDMuninNodePlugin());
+
+  //CUSTOM SMART PLUGINS
+
+  if (g_Config.GetValueB("Plugins", "Spin", true))
+    AddPlugin(new SpinUpMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Online", true))
+      AddPlugin(new OnlineMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Readerror", true))
+      AddPlugin(new ReadErrorMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Startstop", true))
+      AddPlugin(new StartStopMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Reallocsector", true))
+      AddPlugin(new ReallocSectorMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Seekerror", true))
+      AddPlugin(new SeekErrorMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Spinretry", true))
+      AddPlugin(new SpinRetryMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Reporteduncorr", true))
+      AddPlugin(new ReportedUncorrMuninNodePlugin());
+  if (g_Config.GetValueB("Plugins", "Poweroffretract", true))
+      AddPlugin(new PowerOffRetractMuninNodePlugin());
+
+  //---------------------
 
   if (g_Config.GetValueB("Plugins", "SMART", false))
     AddPlugin(new SMARTMuninNodePlugin());

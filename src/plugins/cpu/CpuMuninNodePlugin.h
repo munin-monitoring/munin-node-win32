@@ -53,7 +53,7 @@ public:
   CpuMuninNodePlugin();
   virtual ~CpuMuninNodePlugin();
 
-  virtual const char *GetName() { return "cpu"; };
+  virtual const char *GetName() { return "cpunew"; };
   virtual int GetConfig(char *buffer, int len);
   virtual int GetValues(char *buffer, int len);
   virtual bool IsLoaded() { return NtQuerySystemInformation != NULL; }
@@ -65,7 +65,9 @@ private:
 
   PROCNTQSI NtQuerySystemInformation;
   pfnGetSystemTimes GetSystemTimes;
-  double dbCpuTimePercent;
+  double dbCpuPercent;
+  double dbCpuHeadroomPercent;
   unsigned long long liOldIdleTime;
   unsigned long long liOldSystemTime;
+  unsigned long long liOldUserTime;
 };

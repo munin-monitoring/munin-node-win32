@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
   CFileVersionInfo ver;
   ver.Open(GetModuleHandle(NULL));
   TCHAR displayName[256];
-  _sntprintf(displayName, 255, _T("Munin Node for Windows %i.%i.%i (Beta)"), ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionQFE());
+  _sntprintf(displayName, 255, _T("Munin Node for Windows %i.%i.%i"), ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionBuild());
 
   // Load Configuration
   // Get the executable file path
