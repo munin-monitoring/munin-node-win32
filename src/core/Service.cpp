@@ -37,7 +37,7 @@ void CService::Init(LPCTSTR pServiceName,LPCTSTR pServiceDisplayedName)
   m_status.dwWaitHint = 0;
 
   // Setup Event Log
-  m_EventLogisOpen = m_EventLog.Init(m_szServiceName);
+  m_EventLog.Init(m_szServiceName);
 }
 
 void CService::Start()
@@ -162,7 +162,7 @@ void CService::Run()
   else
   {
     // Let the server go for a few seconds
-    Sleep(300 * 1000);
+    Sleep(100 * 1000);
   }
 
   LogEvent("Stopping Server Thread");
@@ -307,7 +307,7 @@ void CService::LogEvent(LPCSTR pFormat, ...)
   va_end(pArg);
   chMsg[511] = 0; 
 
-  if (m_bService && m_EventLogisOpen)
+  if (m_bService)
   {
     m_EventLog.Write(EVENTLOG_INFORMATION_TYPE, A2TConvert(chMsg).c_str());
   }
@@ -329,7 +329,7 @@ void CService::LogError(LPCSTR pFormat, ...)
   va_end(pArg);
   chMsg[511] = 0; 
 
-  if (m_bService && m_EventLogisOpen)
+  if (m_bService)
   {
     bool debuglog = g_Config.GetValueB("MuninNode","DebugLog", false);
     if(debuglog) m_EventLog.Write(EVENTLOG_INFORMATION_TYPE, A2TConvert(chMsg).c_str());

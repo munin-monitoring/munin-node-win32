@@ -20,25 +20,16 @@
 
 #include "Service.h"
 #include "MuninNodeSettings.h"
-#include "extra/verinfo.h"
+#include "../extra/verinfo.h"
 
 #ifdef _DEBUG
-bool isInHook = false;
 int YourAllocHook(int allocType, void *userData, size_t size, int blockType, long requestNumber, const unsigned char *filename, int lineNumber)
 {
-	if (isInHook || requestNumber == 0) {
-		// Avoid stack overflows and filters out useless junk
-		return TRUE;
-	}
-
-	isInHook = true;
-	// printf("size:%d, requestNumber: %ld\n", size, requestNumber);
-  //I can use this to find exactly where a leak started by setting a conditional breakpoint.S
-  if (requestNumber == -1) 
+  //I can use this to find exactly where a leak started
+  if (size == 96 && (requestNumber == 2075 || requestNumber == 1358))
   {
-    printf("size");
+    printf("cool");
   }
-  isInHook = false;
   return TRUE;
 };
 #endif
@@ -48,10 +39,9 @@ int main(int argc, char* argv[])
 #ifdef _DEBUG
   // Setup the debug options
   _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF 
-    | _CRTDBG_LEAK_CHECK_DF // Check for memory leaks on app exit
-	// | _CRTDBG_CHECK_ALWAYS_DF // Check heap on every alloc/dealloc
-	);
-  //_CrtSetAllocHook(YourAllocHook);
+    | _CRTDBG_LEAK_CHECK_DF //Check for memory leaks on app exit
+    );//| _CRTDBG_CHECK_ALWAYS_DF);
+  _CrtSetAllocHook(YourAllocHook);	
 #endif
 
   // Read in Version Infomation
@@ -67,7 +57,6 @@ int main(int argc, char* argv[])
   PathRemoveFileSpecA(szConfigFilePath);
   PathAppendA(szConfigFilePath, "\\munin-node.ini");
   g_Config.SetPath(szConfigFilePath);
-  g_Config.Trim();
   g_Config.ReadFile();
 
   // Prepare Service modules

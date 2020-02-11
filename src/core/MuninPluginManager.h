@@ -17,6 +17,7 @@ public:
   void AddPlugin(MuninNodePlugin *plugin);
   MuninNodePlugin *LookupPlugin(const char *name);
   void FillPluginList(char *buffer, int len);
+  void TestPlugins();
 
 private:
   std::vector<MuninNodePlugin *> m_Plugins;

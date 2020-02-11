@@ -24,7 +24,6 @@ class CIniFile
 {
 private:
   bool   caseInsensitive;
-  bool   trimming;
   string path;
   struct key {
     vector<string> names;
@@ -45,11 +44,6 @@ public:
   // The default is case insensitive.
   void CaseSensitive()                           {caseInsensitive = false;}
   void CaseInsensitive()                         {caseInsensitive = true;}
-
-  // Sets whether or not keynames and valuenames should be trimmed for whitespace.
-  // The default is not to trim, for compatibility purposes.
-  void UnTrim()                           {trimming = false;}
-  void Trim()                         {trimming = true;}
 
   // Sets path of ini file to read and write from.
   void Path(string const newPath)                {path = newPath;}

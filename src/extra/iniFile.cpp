@@ -34,33 +34,10 @@ using namespace std;
 #define iniEOL '\r' << endl
 #endif
 
-namespace {
-	const char WHITESPACES[] = " \t";
-
-	string ltrim(const string&  str)
-	{
-		if(! str.length()) return str;
-		return str.substr(str.find_first_not_of(WHITESPACES));
-	}
-
-	string rtrim(const string& str)
-	{
-		if(! str.length()) return str;
-		return str.substr(0, str.find_last_not_of(WHITESPACES) + 1);
-	}
-
-	string trim(const string& str)
-	{
-		if(! str.length()) return str;
-		return ltrim(rtrim(str));
-	}
-};
-
 CIniFile::CIniFile( string const iniPath)
 {
   Path( iniPath);
   caseInsensitive = true;
-  trimming = false;
 }
 
 bool CIniFile::ReadFile()
@@ -99,7 +76,6 @@ bool CIniFile::ReadFile()
 	  if ((pRight = line.find_last_of("]")) != string::npos &&
 	      pRight > pLeft) {
 	    keyname = line.substr( pLeft + 1, pRight - pLeft - 1);
-		if (trimming) keyname = trim(keyname);
 	    AddKeyName( keyname);
 	  }
 	  break;
@@ -107,8 +83,6 @@ bool CIniFile::ReadFile()
 	case '=':
 	  valuename = line.substr( 0, pLeft);
 	  value = line.substr( pLeft + 1);
-	  if (trimming) valuename = trim(valuename);
-	  if (trimming) value = trim(value);
 	  SetValue( keyname, valuename, value);
 	  break;
 	  
