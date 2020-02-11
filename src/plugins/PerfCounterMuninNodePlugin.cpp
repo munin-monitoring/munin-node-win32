@@ -241,8 +241,10 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
 
     PDH_COUNTER_INFO *info = (PDH_COUNTER_INFO *)malloc(infoSize);
     status = PdhGetCounterInfo(m_Counters[0], TRUE, &infoSize, info);
-    if (status != ERROR_SUCCESS)
-      return -1;
+    if (status != ERROR_SUCCESS) {
+		free(info);
+		return -1;
+	}
 
     int printCount;
     std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");

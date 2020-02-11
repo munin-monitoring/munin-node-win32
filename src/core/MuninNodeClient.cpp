@@ -88,18 +88,20 @@ int MuninNodeClient::RecvLine(char *line, int len) {
 void *MuninNodeClient::Entry()
 {	
   int ret = 0;
-  // A 4 MiB buffer should be enough, 
+  // A 4 MiB buffer per connection should be enough, 
   // even for chatty multigraph plugins
   static const int BUFFER_SIZE = 4 * 1024 * 1024; 
-  std::vector<char> bytes( BUFFER_SIZE );
-  char* buffer = &bytes[0];
-  char hostname[64] = {0};
+  
+  // Cannot allocate that much space on stack :-(
+  char* buffer = new char[BUFFER_SIZE];
+  memset(buffer, 0, BUFFER_SIZE);
+
+  char hostname[MAX_HOSTNAME_LEN] = {0};
   int len = 0;
   
-  std::string configHostname = g_Config.GetValue("MuninNode", "Hostname");
-  if (configHostname.length() > 0)
-  {
-    strncpy(hostname, configHostname.c_str(),std::min<int>(63,configHostname.length()));
+  ret = gethostname(hostname, MAX_HOSTNAME_LEN);
+  if (ret) {
+    _Module.LogEvent("Failed to get hostname!");
   }
   else
   {
@@ -184,5 +186,6 @@ void *MuninNodeClient::Entry()
     
   }
   
+  delete[] buffer;
   return 0;
 }

@@ -123,10 +123,12 @@
     <ClCompile Include="src\core\Service.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\TString.cpp">
-      <Filter>core</Filter>
+    <ClCompile Include="src\plugins\PerfCounterCustomMuninNodePlugin.cpp">
+      <Filter>Plugins</Filter>
     </ClCompile>
-    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\core\Tools.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\plugins\PerfCounterMuninNodePlugin.h">
@@ -218,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="src\core\TString.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\plugins\PerfCounterCustomMuninNodePlugin.h">
+      <Filter>Plugins</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Tools.h">
+      <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\stdafx.h" />

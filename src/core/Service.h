@@ -39,6 +39,7 @@ private:
 
 	DWORD m_dwThreadID;
     CXEventLog m_EventLog;
+	BOOL m_EventLogisOpen;
 
 public:
     TCHAR m_szServiceName[256];
