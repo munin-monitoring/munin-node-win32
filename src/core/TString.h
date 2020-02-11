@@ -5,6 +5,7 @@
 typedef std::basic_string<TCHAR> TString;
 
 std::string W2AConvert(std::wstring t);
+std::string W2IConvert(std::wstring t);
 std::wstring A2WConvert(std::string t);
 std::wstring T2WConvert(TString t);
 std::string T2AConvert(TString t);

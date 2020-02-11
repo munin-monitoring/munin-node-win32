@@ -15,6 +15,19 @@ std::string W2AConvert(std::wstring t) {
 	return s;
 };
 
+std::string W2IConvert(std::wstring t) {
+	std::string s;
+	int len;
+
+	// Get the converted length
+	len = WideCharToMultiByte(28591, 0, t.c_str(), (int)t.length(), NULL, 0, NULL, NULL);
+	s.resize(len);
+	// Convert string
+	WideCharToMultiByte(28591, 0, t.c_str(), (int)t.length(), (char *)s.c_str(), (int)s.length(), NULL, NULL);
+
+	return s;
+};
+
 std::wstring A2WConvert(std::string t) {
 	std::wstring s;
 	int len;

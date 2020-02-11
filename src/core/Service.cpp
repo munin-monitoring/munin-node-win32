@@ -162,6 +162,7 @@ void CService::Run()
   else
   {
     // Let the server go for a few seconds
+    LogEvent("Test Mode, will exit in 100 seconds.");
     Sleep(100 * 1000);
   }
 
