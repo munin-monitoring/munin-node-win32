@@ -3,5 +3,4 @@
 *.suo
 munin-node.vcproj.*
 .vs/**
-"Installer Files/InstallerBuild/*"
 
