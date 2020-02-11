@@ -314,7 +314,7 @@ void CService::LogEvent(LPCSTR pFormat, ...)
   else
   {
     // As we don't have an event log handle, just write the error to the console.
-    printf(chMsg);
+    printf("%s", chMsg);
     printf("\n");
     fflush(stdout);
   }
@@ -338,7 +338,7 @@ void CService::LogError(LPCSTR pFormat, ...)
   {
     // As we don't have an event log handle, just write the error to the console.
 	printf("ERROR:");
-    printf(chMsg);
+    printf("%s", chMsg);
     printf("\n");
     fflush(stdout);
   }
