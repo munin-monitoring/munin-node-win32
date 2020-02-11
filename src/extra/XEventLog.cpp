@@ -353,7 +353,7 @@ bool CXEventLog::UnRegisterSource()
   _tcscat(szKey, m_pszAppName);
 
   // Delete the event log key from the registry
-  return SHDeleteKey(HKEY_LOCAL_MACHINE, szRegPath) == ERROR_SUCCESS;
+  return SHDeleteKey(HKEY_LOCAL_MACHINE, szKey) == ERROR_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

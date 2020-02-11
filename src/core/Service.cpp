@@ -316,6 +316,7 @@ void CService::LogEvent(LPCSTR pFormat, ...)
     // As we don't have an event log handle, just write the error to the console.
     printf(chMsg);
     printf("\n");
+    fflush(stdout);
   }
 }
 
@@ -330,7 +331,8 @@ void CService::LogError(LPCSTR pFormat, ...)
 
   if (m_bService && m_EventLogisOpen)
   {
-    m_EventLog.Write(EVENTLOG_ERROR_TYPE, A2TConvert(chMsg).c_str());
+    bool debuglog = g_Config.GetValueB("MuninNode","DebugLog", false);
+    if(debuglog) m_EventLog.Write(EVENTLOG_INFORMATION_TYPE, A2TConvert(chMsg).c_str());
   }
   else
   {
@@ -338,5 +340,6 @@ void CService::LogError(LPCSTR pFormat, ...)
 	printf("ERROR:");
     printf(chMsg);
     printf("\n");
+    fflush(stdout);
   }
 }

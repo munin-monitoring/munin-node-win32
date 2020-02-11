@@ -132,7 +132,7 @@ bool CIniFile::ReadFile()
 
 bool CIniFile::WriteFile()
 {
-  unsigned commentID, keyID, valueID;
+  size_t commentID, keyID, valueID;
   // Normally you would use ofstream, but the SGI CC compiler has
   // a few bugs with ofstream. So ... fstream used.
   fstream f;
@@ -163,33 +163,33 @@ bool CIniFile::WriteFile()
   return true;
 }
 
-long CIniFile::FindKey( string const keyname) const
+size_t CIniFile::FindKey( string const keyname) const
 {
-  for ( unsigned keyID = 0; keyID < names.size(); ++keyID)
+  for ( size_t keyID = 0; keyID < names.size(); ++keyID)
     if ( CheckCase( names[keyID]) == CheckCase( keyname))
-      return long(keyID);
+      return keyID;
   return noID;
 }
 
-long CIniFile::FindValue( unsigned const keyID, string const valuename) const
+size_t CIniFile::FindValue( size_t const keyID, string const valuename) const
 {
   if ( !keys.size() || keyID >= keys.size())
     return noID;
 
-  for ( unsigned valueID = 0; valueID < keys[keyID].names.size(); ++valueID)
+  for ( size_t valueID = 0; valueID < keys[keyID].names.size(); ++valueID)
     if ( CheckCase( keys[keyID].names[valueID]) == CheckCase( valuename))
-      return long(valueID);
+      return valueID;
   return noID;
 }
 
-unsigned CIniFile::AddKeyName( string const keyname)
+size_t CIniFile::AddKeyName( string const keyname)
 {
   names.resize( names.size() + 1, keyname);
   keys.resize( keys.size() + 1);
   return names.size() - 1;
 }
 
-string CIniFile::KeyName( unsigned const keyID) const
+string CIniFile::KeyName( size_t const keyID) const
 {
   if ( keyID < names.size())
     return names[keyID];
@@ -197,37 +197,37 @@ string CIniFile::KeyName( unsigned const keyID) const
     return "";
 }
 
-unsigned CIniFile::NumValues( unsigned const keyID)
+size_t CIniFile::NumValues( size_t const keyID)
 {
   if ( keyID < keys.size())
     return keys[keyID].names.size();
   return 0;
 }
 
-unsigned CIniFile::NumValues( string const keyname)
+size_t CIniFile::NumValues( string const keyname)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return 0;
   return keys[keyID].names.size();
 }
 
-string CIniFile::ValueName( unsigned const keyID, unsigned const valueID) const
+string CIniFile::ValueName( size_t const keyID, size_t const valueID) const
 {
   if ( keyID < keys.size() && valueID < keys[keyID].names.size())
     return keys[keyID].names[valueID];
   return "";
 }
 
-string CIniFile::ValueName( string const keyname, unsigned const valueID) const
+string CIniFile::ValueName( string const keyname, size_t const valueID) const
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return "";
   return ValueName( keyID, valueID);
 }
 
-bool CIniFile::SetValue( unsigned const keyID, unsigned const valueID, string const value)
+bool CIniFile::SetValue( size_t const keyID, size_t const valueID, string const value)
 {
   if ( keyID < keys.size() && valueID < keys[keyID].names.size())
     keys[keyID].values[valueID] = value;
@@ -237,15 +237,15 @@ bool CIniFile::SetValue( unsigned const keyID, unsigned const valueID, string co
 
 bool CIniFile::SetValue( string const keyname, string const valuename, string const value, bool const create)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID) {
     if ( create)
-      keyID = long( AddKeyName( keyname));
+      keyID = AddKeyName( keyname);
     else
       return false;
   }
 
-  long valueID = FindValue( unsigned(keyID), valuename);
+  size_t valueID = FindValue( keyID, valuename);
   if ( valueID == noID) {
     if ( !create)
       return false;
@@ -284,7 +284,7 @@ bool CIniFile::SetValueV( string const keyname, string const valuename, char *fo
   return SetValue( keyname, valuename, value);
 }
 
-string CIniFile::GetValue( unsigned const keyID, unsigned const valueID, string const defValue)
+string CIniFile::GetValue( size_t const keyID, size_t const valueID, string const defValue)
 {
   if ( keyID < keys.size() && valueID < keys[keyID].names.size())
     return keys[keyID].values[valueID];
@@ -294,13 +294,13 @@ string CIniFile::GetValue( unsigned const keyID, unsigned const valueID, string 
 
 string CIniFile::GetValue( string const keyname, string const valuename, string const defValue)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID) {
     SetValue(keyname, valuename, defValue);
     return defValue;
   }
 
-  long valueID = FindValue( unsigned(keyID), valuename);
+  size_t valueID = FindValue( keyID, valuename);
   if ( valueID == noID) {
     SetValue(keyname, valuename, defValue);
     return defValue;
@@ -356,11 +356,11 @@ unsigned CIniFile::GetValueV( string const keyname, string const valuename, char
 
 bool CIniFile::DeleteValue( string const keyname, string const valuename)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return false;
 
-  long valueID = FindValue( unsigned(keyID), valuename);
+  size_t valueID = FindValue( keyID, valuename);
   if ( valueID == noID)
     return false;
 
@@ -375,7 +375,7 @@ bool CIniFile::DeleteValue( string const keyname, string const valuename)
 
 bool CIniFile::DeleteKey( string const keyname)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return false;
 
@@ -412,14 +412,14 @@ void CIniFile::HeaderComment( string const comment)
   comments.resize( comments.size() + 1, comment);
 }
 
-string CIniFile::HeaderComment( unsigned const commentID) const
+string CIniFile::HeaderComment( size_t const commentID) const
 {
   if ( commentID < comments.size())
     return comments[commentID];
   return "";
 }
 
-bool CIniFile::DeleteHeaderComment( unsigned commentID)
+bool CIniFile::DeleteHeaderComment( size_t commentID)
 {
   if ( commentID < comments.size()) {
     vector<string>::iterator cpos = comments.begin() + commentID;
@@ -429,22 +429,22 @@ bool CIniFile::DeleteHeaderComment( unsigned commentID)
   return false;
 }
 
-unsigned CIniFile::NumKeyComments( unsigned const keyID) const
+size_t CIniFile::NumKeyComments( size_t const keyID) const
 {
   if ( keyID < keys.size())
     return keys[keyID].comments.size();
   return 0;
 }
 
-unsigned CIniFile::NumKeyComments( string const keyname) const
+size_t CIniFile::NumKeyComments( string const keyname) const
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return 0;
   return keys[keyID].comments.size();
 }
 
-bool CIniFile::KeyComment( unsigned const keyID, string const comment)
+bool CIniFile::KeyComment( size_t const keyID, string const comment)
 {
   if ( keyID < keys.size()) {
     keys[keyID].comments.resize( keys[keyID].comments.size() + 1, comment);
@@ -455,28 +455,28 @@ bool CIniFile::KeyComment( unsigned const keyID, string const comment)
 
 bool CIniFile::KeyComment( string const keyname, string const comment)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return false;
-  return KeyComment( unsigned(keyID), comment);
+  return KeyComment( keyID, comment);
 }
 
-string CIniFile::KeyComment( unsigned const keyID, unsigned const commentID) const
+string CIniFile::KeyComment( size_t const keyID, size_t const commentID) const
 {
   if ( keyID < keys.size() && commentID < keys[keyID].comments.size())
     return keys[keyID].comments[commentID];
   return "";
 }
 
-string CIniFile::KeyComment( string const keyname, unsigned const commentID) const
+string CIniFile::KeyComment( string const keyname, size_t const commentID) const
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return "";
-  return KeyComment( unsigned(keyID), commentID);
+  return KeyComment( keyID, commentID);
 }
 
-bool CIniFile::DeleteKeyComment( unsigned const keyID, unsigned const commentID)
+bool CIniFile::DeleteKeyComment( size_t const keyID, size_t const commentID)
 {
   if ( keyID < keys.size() && commentID < keys[keyID].comments.size()) {
     vector<string>::iterator cpos = keys[keyID].comments.begin() + commentID;
@@ -486,15 +486,15 @@ bool CIniFile::DeleteKeyComment( unsigned const keyID, unsigned const commentID)
   return false;
 }
 
-bool CIniFile::DeleteKeyComment( string const keyname, unsigned const commentID)
+bool CIniFile::DeleteKeyComment( string const keyname, size_t const commentID)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return false;
-  return DeleteKeyComment( unsigned(keyID), commentID);
+  return DeleteKeyComment( keyID, commentID);
 }
 
-bool CIniFile::DeleteKeyComments( unsigned const keyID)
+bool CIniFile::DeleteKeyComments( size_t const keyID)
 {
   if ( keyID < keys.size()) {
     keys[keyID].comments.clear();
@@ -505,10 +505,10 @@ bool CIniFile::DeleteKeyComments( unsigned const keyID)
 
 bool CIniFile::DeleteKeyComments( string const keyname)
 {
-  long keyID = FindKey( keyname);
+  size_t keyID = FindKey( keyname);
   if ( keyID == noID)
     return false;
-  return DeleteKeyComments( unsigned(keyID));
+  return DeleteKeyComments( keyID);
 }
 
 string CIniFile::CheckCase( string s) const

@@ -20,6 +20,8 @@
 #include "MuninNodeClient.h"
 #include "Service.h"
 #include "../extra/verinfo.h"
+#include <vector>
+#include <algorithm>
 
 MuninNodeClient::MuninNodeClient(JCSocket *client, JCThread *server, MuninPluginManager *pluginManager) 
   : m_Client(client)
@@ -101,6 +103,14 @@ void *MuninNodeClient::Entry()
   if (ret) {
     _Module.LogEvent("Failed to get hostname!");
   }
+  else
+  {
+    ret = gethostname(hostname, 64);
+      if (ret) {
+        _Module.LogEvent("Failed to get hostname!");
+    }
+  }
+
   ret = _snprintf(buffer, BUFFER_SIZE, "# munin node at %s\n", hostname);
 
   // we simply send this string to the client

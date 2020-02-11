@@ -3,6 +3,7 @@
 ; NSIS Installer build script
 ;--------------------------------
 
+!define /ifndef LANG_ENGLISH 1033
 !addplugindir "nsisFirewall"
 !include "FileFunc.nsh"
 
@@ -53,7 +54,7 @@ Section "Munin Node for Windows (required)"
   SetOutPath $INSTDIR
   
   ; Put file there
-  File "..\Release\munin-node.exe"
+  File "..\bin\Release\munin-node.exe"
   File "..\munin-node.ini"
   
   ; Write the installation path into the registry

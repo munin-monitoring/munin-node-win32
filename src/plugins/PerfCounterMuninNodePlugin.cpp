@@ -44,6 +44,53 @@ PerfCounterMuninNodePlugin::~PerfCounterMuninNodePlugin()
   }
 }
 
+const TCHAR *PerfCounterMuninNodePlugin::GetPdhCounterLocalizedName(const TCHAR *englishName)
+{
+	TCHAR *regBuffer;
+	DWORD regBufferSize = 4096;
+	DWORD status;
+
+	do {
+		regBuffer = new TCHAR[regBufferSize];
+		status = RegQueryValueEx(HKEY_PERFORMANCE_DATA, L"Counter 009", NULL, NULL, (LPBYTE)regBuffer, &regBufferSize);
+
+		if (status == ERROR_MORE_DATA) {
+			delete [] regBuffer;
+			regBufferSize += 4096;
+		} else {
+			if (status != ERROR_SUCCESS) {
+				delete [] regBuffer;
+				_Module.LogEvent("PerfCounter plugin: %s: RegQueryValueEx error=%x", m_Name.c_str(), status);
+				return englishName;
+			}
+		}
+	} while (status != ERROR_SUCCESS);
+
+	DWORD fIndex = -1;
+
+	for (TCHAR *idx = regBuffer; *idx; idx += wcslen(idx) + 1) {
+		TCHAR *cName = idx + wcslen(idx) + 1;
+		if (_wcsicmp(cName, englishName) == 0) {
+			fIndex = _wtol(idx);
+			break;
+		}
+		idx = cName;
+	}
+
+	delete regBuffer;
+	
+	DWORD bufSize = 0;
+	PdhLookupPerfNameByIndex(NULL, fIndex, NULL, &bufSize);
+	TCHAR *localName = new TCHAR[bufSize];
+	status = PdhLookupPerfNameByIndex(NULL, fIndex, localName, &bufSize);
+	if (status != ERROR_SUCCESS) {
+		_Module.LogError("PerfCounter plugin: %s: Could not find a local name for %ls, error=%x", m_Name.c_str(), englishName, status);
+		return englishName;
+	}
+	return localName;
+}
+
+
 bool PerfCounterMuninNodePlugin::OpenCounter()
 {
   PDH_STATUS status;  
@@ -70,6 +117,10 @@ bool PerfCounterMuninNodePlugin::OpenCounter()
   
   DWORD counterListLength = 0;  
   DWORD instanceListLength = 0;
+  if (g_Config.GetValueB(m_SectionName, "UseEnglishObjectNames", true)) {
+	  counterName = GetPdhCounterLocalizedName(counterName.c_str());
+	  objectName = GetPdhCounterLocalizedName(objectName.c_str());
+  }
   status = PdhEnumObjectItems(NULL, NULL, objectName.c_str(), NULL, &counterListLength, NULL, &instanceListLength, PERF_DETAIL_EXPERT, 0);
   if (status != PDH_MORE_DATA) {
 	  _Module.LogError("PerfCounter plugin: %s: PdhEnumObjectItems error=%x", m_Name.c_str(), status);
@@ -199,7 +250,7 @@ int PerfCounterMuninNodePlugin::GetConfig(char *buffer, int len)
     std::string graphTitle = g_Config.GetValue(m_SectionName, "GraphTitle", "Disk Time");
     std::string graphCategory = g_Config.GetValue(m_SectionName, "GraphCategory", "system");
     std::string graphArgs = g_Config.GetValue(m_SectionName, "GraphArgs", "--base 1000 -l 0");
-	std::string explainText = W2AConvert(info->szExplainText);
+    std::string explainText = info->szExplainText ? W2AConvert(info->szExplainText) : m_CounterNames[0].c_str();
 	std::string counterName = W2AConvert(info->szCounterName);
     printCount = _snprintf(buffer, len, "graph_title %s\n"
       "graph_category %s\n"
