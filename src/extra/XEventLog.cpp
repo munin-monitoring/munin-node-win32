@@ -441,12 +441,15 @@ void CXEventLog::SetAppName(LPCTSTR lpszApp)
 {
 	if (!lpszApp)
 		return;
-	if (!m_pszAppName)
-		m_pszAppName = new TCHAR [_MAX_PATH*2];
-	if (m_pszAppName)
-	{
-		memset(m_pszAppName, 0, _MAX_PATH*2*sizeof(TCHAR));
-		_tcsncpy(m_pszAppName, lpszApp, _MAX_PATH*2-2);
+
+	try {
+		if (!m_pszAppName)
+			m_pszAppName = new TCHAR[_MAX_PATH * 2];
+
+		memset(m_pszAppName, 0, _MAX_PATH * 2 * sizeof(TCHAR));
+		_tcsncpy(m_pszAppName, lpszApp, _MAX_PATH * 2 - 2);
+	}
+	catch (std::bad_alloc& ba) {
 	}
 }
 
