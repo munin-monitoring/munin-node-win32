@@ -37,7 +37,7 @@ int HDMuninNodePlugin::GetConfig(char *buffer, int len)
   ret = _snprintf(buffer, len, "graph_title HDD temperature\n"
     "graph_args --base 1000 -l 0\n"
     "graph_vlabel temp in C\n"
-    "graph_category S.M.A.R.T\n"
+    "graph_category disk\n"
     "graph_info This graph shows the temperature in degrees Celsius of the hard drives in the machine.\n");
   buffer += ret;
   len -= ret;
