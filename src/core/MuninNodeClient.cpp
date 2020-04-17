@@ -137,7 +137,7 @@ void *MuninNodeClient::Entry()
       // Read in Version Infomation
       CFileVersionInfo ver;
       ver.Open(GetModuleHandle(NULL));
-      ret = _snprintf(buffer, BUFFER_SIZE, "munin node on %s version: Munin Node for Windows %i.%i.%i\n", hostname, ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionQFE());
+      ret = _snprintf(buffer, BUFFER_SIZE, "munin node on %s version: Munin Node for Windows %i.%i.%i\n", hostname, ver.GetFileVersionMajor(), ver.GetFileVersionMinor(), ver.GetFileVersionBuild());
       ret = SendLine(buffer);        
 
     } else if (strstr(buffer, "nodes") == buffer) {        
