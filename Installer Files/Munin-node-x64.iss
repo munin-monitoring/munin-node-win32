@@ -4,7 +4,7 @@
 ;Munin Node For Windows
 
 #define MyAppName "Munin Node"
-#define MyAppVersion "1.7.3.1"
+#define MyAppVersion "1.7.3.2"
 #define MyAppExeName "munin-node.exe"
 
 [Setup]
@@ -18,7 +18,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputBaseFilename=Munin-Node-1.7.3.1-x64
+OutputBaseFilename=Munin-Node-1.7.3.2-x64
 OutputDir=InstallerBuild\
 Compression=lzma
 SolidCompression=yes
