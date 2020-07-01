@@ -19,7 +19,7 @@
 #include "StdAfx.h"
 #include "MuninPluginManager.h"
 #include "Service.h"
-#include <typeinfo>;
+#include <typeinfo>
 
 #include "../plugins/cpu/CpuMuninNodePlugin.h"
 #include "../plugins/disk/DiskMuninNodePlugin.h"
