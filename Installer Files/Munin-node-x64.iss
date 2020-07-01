@@ -33,6 +33,7 @@ Source: "..\munin-node.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Install-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Uninstall-Service.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
+Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Run]
