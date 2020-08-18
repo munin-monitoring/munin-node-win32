@@ -2,6 +2,9 @@
 Munin Node for Windows
 ============================
 
+**I will try my best to keep maintaining this repo,**
+**but I am also busy writing a new Munin Node For Windows in C# that would work better in newer versions of windows**
+
 Introduction
 ------------
 Munin Node for Windows AKA munin-node-win32, is a Windows client for the Munin monitoring system.
