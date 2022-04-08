@@ -16,7 +16,7 @@ It is written in C++ with most plugins built into the executable.
 This is different from the standard munin-node client, which only uses external plugins written as shell and Perl scripts.
 
 Installer Usage
-------------------
+---------------
 
 The installer may be run with different command-line flags.
 
