@@ -22,7 +22,7 @@ The installer may be run with different command-line flags.
 
   * /HELP or /? Shows the help message.
   * /SILENT or /VERYSILENT Instructs the installer to be silent or very silent.
-  * more options are shown in the /? help.
+  * more options are available. The full list is displayed in /HELP or on the `Inno Setup website <https://jrsoftware.org/ishelp/index.php?topic=setupcmdline>`_.  
 
 Command Line Usage
 ------------------
