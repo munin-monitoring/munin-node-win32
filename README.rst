@@ -15,8 +15,19 @@ Munin Node for Windows AKA munin-node-win32, is a Windows client for the Munin m
 It is written in C++ with most plugins built into the executable. 
 This is different from the standard munin-node client, which only uses external plugins written as shell and Perl scripts.
 
+Installer Usage
+---------------
+
+The installer may be run with different command-line flags.
+
+  * /HELP or /? Shows the help message.
+  * /SILENT or /VERYSILENT Instructs the installer to be silent or very silent.
+  * more options are available. The full list is displayed in /HELP or on the `Inno Setup website <https://jrsoftware.org/ishelp/index.php?topic=setupcmdline>`_.  
+
 Command Line Usage
 ------------------
+
+The munin-node executable takes these command-line flags.
 
   * -install Install as a system service.
   * -uninstall Removes the installed service.
