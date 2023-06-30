@@ -2,8 +2,9 @@
 Munin Node for Windows
 ============================
 
-**I will try my best to keep maintaining this repo,**
-**but I am also busy writing a new Munin Node For Windows in C# that would work better in newer versions of windows - lemontree23**
+**Active development of this repo has been stopped**
+**New contributors are welcome to submit pull requests if you want to help revive this project**
+** - singularcitrus**
 
 If you wish to follow the development of the new Munin Node for Windows, go to `this repository
 <https://github.com/munin-monitoring/munin-node-windows/>`_
